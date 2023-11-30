@@ -2,6 +2,10 @@
   padding: 10px;
 }
 
+.sec {
+  outline: gainsboro 1px solid;
+}
+
 .heading {
   padding-left: 1rem;
   border-left: 5px solid var(--secondColor);
@@ -72,19 +76,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 0.5rem;
+  padding:  0.5rem;
 }
 
 .btns {
   background-color: var(--softBg);
-  width: 100px;
+  width: 75px;
   height: 25px;
-  padding: 0.3rem;
+  padding: 0.3rem 0;
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
     rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   display: flex;
   justify-content: space-evenly;
+  font-size: 0.9rem;
 }
 
 .rbtn {
