@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import axios from "axios"
 import { Link } from 'react-router-dom';
 import styles from "./addcart.module.css"
 import currencyFormatter from 'currency-formatter';
 import { AiOutlineDelete, AiOutlinePlus, AiOutlineMinus, AiOutlineShoppingCart } from "react-icons/ai"
+import { Button, Modal } from 'antd';
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux";
 import { addToCart, removeItem } from "../../redux/cartReducer"
@@ -11,12 +13,21 @@ import { useAppContext } from "../../context/Context"
 import logo from "../../assets/colorlogo.webp"
 import { toast } from 'react-hot-toast'
 
-
 const AddCart = () => {
     const products = useSelector(state => state.cart.products)
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const dispatch = useDispatch()
     const { user } = useAppContext()
     const imgUrl = import.meta.env.VITE_APP_UPLOAD_URL
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
 
     const totalPrice = products.reduce((accumulator, currentItem) => {
         const itemTotal = currentItem.price * currentItem.quantity;
@@ -111,99 +122,12 @@ const AddCart = () => {
     }
 
     return (
-
-        // <div className={styles.container}>
-        //     {!user && <strong className="mt-4 mb-4  leading-relaxed" >Please fill in the fields below and click place order to complete your purchase!
-        //         Already registered? <Link className="text-blue-700 underline" to="/register"  >Please login here</Link></strong>}
-        //     <h1 className={`flex items-center gap-3  font-medium text-2xl ${styles.heading}`}>Your Cart <AiOutlineShoppingCart /> ({products.length}) </h1>
-        //     <div className={styles.mtable}>
-        //         {products.map((item) => {
-
-        //             const { id, img, name, color, size, shipping, price, quantity } = item
-        //             const priceInr = currencyFormatter.format(price, { code: 'INR' });
-        //             const shippingInr = currencyFormatter.format(shipping, { code: 'INR' });
-        //             const price_quantity = price * quantity
-        //             const subTotal = price_quantity + shipping
-
-
-        //             const subTotalInr = currencyFormatter.format(subTotal, { code: 'INR' });
-
-
-        //             return (
-        //                 <div className={styles.card} key={id}>
-        //                     <div className={styles.cardInfo}>
-        //                         <div className={styles.imgContainer}>
-        //                             <img className={styles.img} src={imgUrl + img} alt={name} />
-        //                         </div>
-
-        //                         <div className={styles.info_container}>
-        //                             <strong className={styles.spanHeading}>{name}</strong>
-        //                             <div className={styles.infoContainer} >
-
-        //                                 <div className=' grid gap-3 '>
-        //                                     <span>color: {color}</span>
-        //                                     <span>size: {size}</span>
-        //                                 </div>
-
-        //                                 <div className=' grid gap-3 '>
-        //                                     <span>shipping: {!isNaN(shipping) && null}{shippingInr}</span>
-        //                                     <span>price: {priceInr}</span>
-        //                                 </div>
-
-        //                             </div>
-        //                         </div>
-
-        //                     </div>
-
-        //                     <div className={styles.action} >
-        //                         <div className={styles.btns}>
-        //                             <button onClick={() => handleDecrement(id)}> <AiOutlineMinus /> </button>
-        //                             <span>{quantity}</span>
-        //                             <button onClick={() => handleIncrement(id)}> <AiOutlinePlus /> </button>
-        //                         </div>
-        //                         <div>
-        //                             <button onClick={() => dispatch(removeItem(id))} className={styles.rbtn}>
-        //                                 <AiOutlineDelete />
-        //                             </button>
-        //                         </div>
-
-        //                         <div className={styles.priceContainer}>
-        //                             Sub Total:
-        //                             <span> {subTotalInr} </span>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //             )
-        //         })}
-        //     </div>
-
-
-        //     {
-        //         products.length >= 1 && <div className={styles.checkOutContainer} >
-        //             <div className={styles.total_shipping_container}>
-        //                 <div className={styles.total_shipping_container_div}> <span>Sub Total</span> <span>{totalPriceInr}</span> </div>
-        //                 <div className={styles.total_shipping_container_div}> <span>Shipping</span>  <span>{totalShippingPriceInr}</span>  </div>
-        //             </div>
-
-        //             <div className={styles.grand_total}>
-        //                 <div className={styles.grand_total_div} >
-        //                     <span>Grand Total</span>
-        //                     <span>{grandTotalInr}</span>
-        //                 </div>
-        //             </div>
-
-        //             {!user ? <Link to="/register" className={styles.btn} >Proceed To Checkout</Link> : <button onClick={() => handleDownload(grandTotal)} className={styles.btn}> Proceed To Checkout</button>}
-
-
-        //         </div>
-        //     }
-
-        // </div>
-
         <section className={styles.sec} >
 
-            {!user && <strong className="mt-4 mb-4  leading-relaxed" >Please fill in the fields below and click place order to complete your purchase!
-                Already registered? <Link className="text-blue-700 underline" to="/register"  >Please login here</Link></strong>}
+            <div className='mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8'>
+                {!user && <strong className="mt-4 mb-4  leading-relaxed" >Please fill in the fields below and click place order to complete your purchase!
+                    Already registered? <Link className="text-blue-700 underline" to="/register"  >Please login here</Link></strong>}
+            </div>
 
             <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
                 <div className="mx-auto max-w-3xl">
@@ -264,7 +188,7 @@ const AddCart = () => {
                                                 </div>
                                             </div>
 
-                                            <button className="text-gray-600 transition hover:text-red-600">
+                                            <button onClick={() => dispatch(removeItem(id))} className="text-gray-600 transition hover:text-red-600">
                                                 <span className="sr-only">Remove item</span>
 
                                                 <svg
@@ -293,23 +217,14 @@ const AddCart = () => {
                                 <dl className="space-y-0.5 text-sm text-gray-700">
                                     <div className="flex justify-between">
                                         <dt>Subtotal</dt>
-                                        <dd>{totalPriceInr }</dd>
+                                        <dd>{totalPriceInr}</dd>
                                     </div>
 
                                     <div className="flex justify-between">
                                         <dt>Shipping</dt>
-                                        <dd>{totalShippingPriceInr  }</dd>
+                                        <dd>{totalShippingPriceInr}</dd>
                                     </div>
-    
-                                    {/* <div className="flex justify-between">
-                                                        <dt>VAT</dt>
-                                                        <dd>£25</dd>
-                                                    </div>
 
-                                                    <div className="flex justify-between">
-                                                        <dt>Discount</dt>
-                                                        <dd>-£20</dd>
-                                                    </div> */}
 
                                     <div className="flex justify-between !text-base font-medium">
                                         <dt>Total</dt>
@@ -317,7 +232,7 @@ const AddCart = () => {
                                     </div>
                                 </dl>
 
-                                <div className="flex justify-end">
+                                {/* <div className="flex justify-end">
                                     <span
                                         className="inline-flex items-center justify-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-indigo-700"
                                     >
@@ -338,26 +253,28 @@ const AddCart = () => {
 
                                         <p className="whitespace-nowrap text-xs">2 Discounts Applied</p>
                                     </span>
-                                </div>
+                                </div> */}
 
                                 <div className="flex justify-end">
-                                    <a
-                                        href="#"
-                                        className="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
-                                    >
-                                        Checkout
-                                    </a>
+                                    {!user ?
+
+                                        <button className="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600" to='/check-out ' onClick={showModal}>Checkout</button>
+
+                                        :
+                                        <Link className="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600" to='/check-out'>Checkout</Link>
+                                    }
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+            </Modal>
         </section>
-
-
-
-
     )
 }
 

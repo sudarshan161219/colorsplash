@@ -1,4 +1,4 @@
-import { SidebarNav } from "./components/export"
+import { SidebarNav, Modal } from "./components/export"
 import {
   Home, Product, Products, SharedLayout, Register, AddCart, Cart, AboutUs,
   Contact, Page_one,
@@ -6,7 +6,8 @@ import {
   Page_three,
   Page_four,
   SuccessPage,
-  PageNotFound
+  PageNotFound,
+  Checkout
 } from "./pages/export"
 import ProtectedRoute from "./protectedRoute/ProtectedRoutes";
 import User from "./user/User"
@@ -18,6 +19,7 @@ const App = () => {
   return (
     <div >
       <SidebarNav />
+      <Modal />
       <Toaster
         position="top-right"
         reverseOrder={false}
@@ -40,6 +42,7 @@ const App = () => {
             <Route path="/cookie_policy" element={<Page_three />} />
             <Route path="/exchange_policy" element={<Page_four />} />
             <Route path="/success-page" element={<SuccessPage />} />
+            <Route path="/check-out" element={<Checkout />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
 

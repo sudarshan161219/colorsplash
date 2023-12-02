@@ -13,6 +13,8 @@ import Page_four from "./legalPages/Page_four.jsx";
 import SuccessPage from "./successPage/SuccessPage.jsx";
 import PageNotFound from "./404/PageNotFound.jsx";
 import Cart from "./cart/Cart.jsx";
+import Checkout from "./checkout/Checkout.jsx";
+
 
 export {
   Home,
@@ -30,4 +32,5 @@ export {
   SuccessPage,
   PageNotFound,
   Cart,
+  Checkout,
 };

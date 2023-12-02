@@ -150,10 +150,11 @@ a {
   --text-active: #FFFFFF;
   --border-width: 0.125em;
   --footerBg: #0F0F0F;
+  --tw-border-opacity: 1
 }
 
 .light {
-  --bg: white;
+  --bg: #fff;
   --textColor: black;
   --softBg: #f0f0f0;
   --softTextColor: #626262;

@@ -17,6 +17,7 @@ import MyInfo from "./myinfo/MyInfo.jsx";
 import Wishlist from "./wishlist/Wishlist.jsx";
 import SimilarProductsCard from "./similar_products/SimilarProductsCard.jsx";
 import Filters from "./filters/Filters.jsx";
+import Modal from "./authModal/Modal.jsx";
 
 export {
   Navbar,
@@ -38,4 +39,5 @@ export {
   SimilarProductsCard,
   PageLoading,
   Filters,
+  Modal,
 };
