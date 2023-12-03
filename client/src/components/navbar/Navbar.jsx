@@ -8,7 +8,7 @@ import logo from "../../assets/colorlogo.webp"
 
 
 const Navbar = () => {
-    const { toggleMenuFn, user } = useAppContext()
+    const { toggleMenuFn, user, toggle_Auth_Modal } = useAppContext()
     const products = useSelector(state => state.cart.products)
     const wishlists = useSelector(state => state.wishlist.wishlists)
     const handleClick = () => {
@@ -43,9 +43,16 @@ const Navbar = () => {
                     <AiOutlineShoppingCart className={styles.icon} />
                 </Link>
 
-                <Link className={styles.userIcon} to={`${user ? '/my_account' : '/register'}`}>
+                {/* <Link className={styles.userIcon} to={`${user ? '/my_account' : '/register'}`}>
                     <AiOutlineUser className={styles.icon} />
-                </Link>
+                </Link> */}
+
+                {user ? 
+                <Link className={styles.userIcon} to='/my_account'>
+                    <AiOutlineUser className={styles.icon} />
+                </Link> : 
+                    <AiOutlineUser onClick={toggle_Auth_Modal} className={styles.icon} />       
+                }
 
                 <AiOutlineMenu onClick={handleClick} className={`${styles.icon} ${styles.menuIcon}`} />
             </div>

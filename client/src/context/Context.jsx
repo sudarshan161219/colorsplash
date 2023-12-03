@@ -19,7 +19,8 @@ import {
     SORT_BY_PRICE,
     FILTER_BY_PRICE,
     FILTER_MODAL,
-    PAGE_NUM
+    PAGE_NUM,
+    TOGGLE_AUTH_MODAL
 } from "./action"
 
 
@@ -31,6 +32,7 @@ const initialState = {
     userLoading: false,
     userUpdating: false,
     toggleMenu: false,
+    toggleAuthModal: false,
     filterModal: false,
     toggleSearch: false,
     user: null,
@@ -88,7 +90,7 @@ const ContextProvider = ({ children }) => {
             });
             toast.success("User Created!,  Redirecting.....");
         } catch (error) {
-            toast.error(error.response.data.msg);
+            toast.error(error.response.data.error.message)
             dispatch({
                 type: REGISTER_USER_ERROR,
                 payload: { error },
@@ -196,6 +198,11 @@ const ContextProvider = ({ children }) => {
         dispatch({ type: FILTER_MODAL })
     }
 
+
+    const toggle_Auth_Modal = () => {
+        dispatch({ type: TOGGLE_AUTH_MODAL })
+    }
+
     useEffect(() => {
         fetchUserProfile()
     }, [])
@@ -207,7 +214,8 @@ const ContextProvider = ({ children }) => {
             handle_Sort_Price,
             handle_Filter_price,
             handle_Filter_Modal,
-            handle_page_num
+            handle_page_num,
+            toggle_Auth_Modal
         }} >
             {children}
         </Context.Provider>

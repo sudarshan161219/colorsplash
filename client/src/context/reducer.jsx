@@ -1,5 +1,6 @@
 import {
     TOGGLE_MENU,
+    TOGGLE_AUTH_MODAL,
     REGISTER_USER_BEGIN,
     REGISTER_USER_SUCCESS,
     REGISTER_USER_ERROR,
@@ -152,6 +153,13 @@ const reducer = (state, action) => {
         return {
             ...state,
             pagenum: action.payload.page_num,
+        };
+    }
+
+    if (action.type === TOGGLE_AUTH_MODAL) {
+        return {
+            ...state,
+            toggleAuthModal: !state.toggleAuthModal,
         };
     }
 

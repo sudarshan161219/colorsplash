@@ -2,19 +2,18 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from "./modal.module.css"
 import { IoCloseOutline } from "react-icons/io5";
-import Register from "../../pages/register/Register"
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { useAppContext } from "../../context/Context";
-// import illu1 from "../../assets/Fancy Plants - Plant and Pot.png"
+import { toast } from "react-hot-toast";
 import img from "../../assets/TuttoRiccoMarching.png"
 import logo from "../../assets/colorlogo.webp"
 
 const Modal = () => {
-    const { loginFn, registerFn, isRLLoading, user } = useAppContext()
+    const { loginFn, registerFn, isRLLoading, user, toggle_Auth_Modal, toggleAuthModal } = useAppContext()
     const [show, setShow] = useState(false)
     const [phoneNumber, setPhoneNumber] = useState('');
     const [isMember, setIsMember] = useState(false)
-    const navigate = useNavigate();
+
 
     const handleShowPassword = () => {
         setShow(!show)
@@ -25,17 +24,30 @@ const Modal = () => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData);
+
+        const { email, firstname, lastname, password } = data
+
         if (isMember) {
-            // loginUser(data)
-            loginFn(data)
+            if (!email || !password) {
+                toast.error("please enter all values!");
+            } else {
+                loginFn(data)
+            }
         } else {
-            if (data.phoneNumber.length > 9) {
-                // registerUser(data);
+            if (!email || !firstname || !lastname || !password) {
+                toast.error("please enter all values!");
+            } else if (phoneNumber.length !== 10 || phoneNumber.length > 10) {
+                    toast.error("invalid phone number ");
+            }
+            else {
+                data.username = data.firstname + " " + data.lastname;
                 registerFn(data)
             }
         }
-        e.currentTarget.reset();
+        // e.currentTarget.reset();
     }
+
+
 
 
     const handlePhoneNumberChange = (event) => {
@@ -49,19 +61,14 @@ const Modal = () => {
     }
 
 
-    useEffect(() => {
-        if (user) {
-            setTimeout(() => {
-                navigate("/my_account");
-            }, 1100);
-        }
-    }, [user, navigate]);
+
 
 
     return (
-        <div className={styles.container}>
+        <div className={` ${toggleAuthModal ? `${styles.show} ${styles.container}` : `${styles.container}`} `}>
             <div className={styles.modalContainer} >
-                <header className=" p-3 flex justify-end " ><IoCloseOutline className={styles.closeIcon} />
+                <header className=" p-3 flex justify-end " >
+                    <IoCloseOutline onClick={toggle_Auth_Modal} className={styles.closeIcon} />
                 </header>
 
                 <div className='flex justify-center'>
@@ -100,8 +107,8 @@ const Modal = () => {
                                     </p>
                                 </div>
 
-                                <form action="#" className="mt-8 grid  gap-6">
-                                    <div className="col-span-6">
+                                <form onSubmit={handleSubmit} className="mt-8 grid  gap-6">
+                                    {!isMember && <div className="col-span-6">
                                         <label htmlFor="FirstName" className="block text-sm font-medium text-gray-700">
                                             First Name
                                         </label>
@@ -109,12 +116,12 @@ const Modal = () => {
                                         <input
                                             type="text"
                                             id="FirstName"
-                                            name="first_name"
+                                            name="firstname"
                                             className={styles.input}
                                         />
-                                    </div>
+                                    </div>}
 
-                                    <div className="col-span-6 ">
+                                    {!isMember && <div className="col-span-6 ">
                                         <label htmlFor="LastName" className="block text-sm font-medium text-gray-700">
                                             Last Name
                                         </label>
@@ -122,10 +129,10 @@ const Modal = () => {
                                         <input
                                             type="text"
                                             id="LastName"
-                                            name="last_name"
+                                            name="lastname"
                                             className={styles.input}
                                         />
-                                    </div>
+                                    </div>}
 
                                     <div className="col-span-6">
                                         <label htmlFor="Email" className="block text-sm font-medium text-gray-700"> Email </label>
@@ -138,30 +145,43 @@ const Modal = () => {
                                         />
                                     </div>
 
-                                    <div className="col-span-6">
-                                        <label htmlFor="Email" className="block text-sm font-medium text-gray-700"> Phone </label>
+                                    {!isMember && <div className="col-span-6">
+                                        <label htmlFor="Phone" className="block text-sm font-medium text-gray-700"> Phone </label>
 
                                         <input
                                             type="number"
                                             id="Phone"
-                                            name="phone"
+                                            name="phoneNumber"
                                             maxLength="10"
+                                            value={phoneNumber}
+                                            onChange={handlePhoneNumberChange}
                                             className={styles.input}
                                         />
-                                    </div>
+                                    </div>}
 
                                     <div className="col-span-6 ">
-                                        <label htmlFor="Password" className="block text-sm font-medium text-gray-700"> Password </label>
+
+                                        <div className='flex items-center justify-between'>
+                                            <label htmlFor="Password" className="block text-sm font-medium text-gray-700"> Password </label>
+
+                                            {
+                                                show ?
+                                                    <div onClick={handleShowPassword} className='flex cursor-pointer items-center gap-2' ><AiOutlineEyeInvisible className={styles.pIcon} />  <span className='text-sm'>Hide</span> </div>
+                                                    :
+                                                    <div onClick={handleShowPassword} className='flex cursor-pointer items-center gap-2' ><AiOutlineEye className={styles.pIcon} />  <span className='text-sm'>Show</span> </div>
+
+                                            }
+                                        </div>
 
                                         <input
-                                            type="password"
+                                            type={show ? "text" : "password"}
                                             id="Password"
                                             name="password"
                                             className={styles.input}
                                         />
                                     </div>
 
-                                    <div className="col-span-6">
+                                    {/* {!isMember && <div className="col-span-6">
                                         <label htmlFor="PasswordConfirmation" className="block text-sm font-medium text-gray-700">
                                             Password Confirmation
                                         </label>
@@ -172,28 +192,28 @@ const Modal = () => {
                                             name="password_confirmation"
                                             className={styles.input}
                                         />
-                                    </div>
+                                    </div>} */}
 
 
-                                    <div className="col-span-6">
+                                    {!isMember && <div className="col-span-6">
                                         <p className="text-sm text-gray-500">
                                             By creating an account, you agree to our
                                             <a href="#" className="text-gray-700 underline"> terms and conditions </a>
                                             and
                                             <a href="#" className="text-gray-700 underline">privacy policy</a>.
                                         </p>
-                                    </div>
+                                    </div>}
 
-                                    <div className="col-span-6">
+                                    <div className="col-span-6 grid">
                                         <button
                                             className={`${styles.button} inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium transition `}
                                         >
-                                            Create an account
+                                            {isMember ? "Login" : "Create an account"}
                                         </button>
 
                                         <p className="mt-4 text-sm text-gray-500 sm:mt-0">
-                                            Already have an account?
-                                            <a href="#" className="text-gray-700 underline">Log in</a>.
+                                            {`${isMember ? "Don't" : "Already"} have an account?`} &nbsp;
+                                            <span className="text-gray-700 underline cursor-pointer" onClick={handleIsMember}> {isMember ? "Sign Up" : "Log In"} </span>
                                         </p>
                                     </div>
                                 </form>
