@@ -14,13 +14,16 @@ import {
   Select,
   Switch,
   TreeSelect,
-  Flex
+  Flex,
+  Space
 } from 'antd';
 import { data } from "../../data/data"
 
 const Checkout = () => {
   const products = useSelector(state => state.cart.products)
   const [componentSize, setComponentSize] = useState('default');
+  const [selectedState, setSelectedState] = useState('')
+  const [value, setValue] = useState(1);
   const imgUrl = import.meta.env.VITE_APP_UPLOAD_URL
 
   const totalPrice = products.reduce((accumulator, currentItem) => {
@@ -40,23 +43,43 @@ const Checkout = () => {
   const grandTotal = totalPrice + totalShippingPrice
   const grandTotalInr = currencyFormatter.format(grandTotal, { code: 'INR' });
 
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData);
+    data.state = selectedState
+    // console.log(data);
+  }
+
+  const onChange = (e) => {
+    console.log('radio checked', e.target.value);
+    setValue(e.target.value);
+  };
+
+  const handleChange = (value) => {
+    setSelectedState(value)
+  };
+
   return (
     <div className="p-3">
       <h1 className={`flex items-center gap-3  font-medium ${styles.heading}`}>Check Out</h1>
       <strong className="font-medium text-lg mt-4 mb-4">Billing Details</strong>
 
 
-      <div className={` grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8  mt-4 mb-4`}>
-        <form className=" flex flex-col gap-4 lg:col-span-2 ">
+      <div className={` items-baseline p-3 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8  mt-4 mb-4`}>
+        <form onSubmit={handleSubmit} className=" flex flex-col gap-4 lg:col-span-2 ">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
             <div className="grid gap-3">
-              <label htmlFor="FirstName" className={styles.label}>
+              <label htmlFor="First_Name" className={styles.label}>
                 First Name
               </label>
 
               <input
                 type="text"
-                id="FirstName"
+                id="First_Name"
+                name="firstname"
                 placeholder="First Name"
                 className={styles.input}
                 required
@@ -64,13 +87,14 @@ const Checkout = () => {
             </div>
 
             <div className="grid gap-3">
-              <label htmlFor="LastName" className={styles.label}>
+              <label htmlFor="Last_Name" className={styles.label}>
                 Last Name
               </label>
 
               <input
                 type="text"
-                id="LastName"
+                id="Last_Name"
+                name="lastname"
                 placeholder="Last Name"
                 className={styles.input}
                 required
@@ -88,6 +112,7 @@ const Checkout = () => {
               <input
                 type="text"
                 id="CountryRegion"
+                name="CountryRegion"
                 placeholder="Country / Region"
                 className={styles.input}
                 required
@@ -102,9 +127,9 @@ const Checkout = () => {
               <input
                 type="text"
                 id="CompanyName"
+                name="CompanyName"
                 placeholder="Company (optional)"
                 className={styles.input}
-                required
               />
             </div>
           </div>
@@ -119,6 +144,7 @@ const Checkout = () => {
               <input
                 type="text"
                 id="StreetAddress"
+                name="StreetAddress"
                 placeholder="House number and street name"
                 className={styles.input}
                 required
@@ -133,9 +159,10 @@ const Checkout = () => {
               <input
                 type="text"
                 id="Aptsuiteunit"
+                name="Aptsuiteunit"
                 placeholder="apartment, suite, unit, etc. (optional)"
                 className={styles.input}
-                required
+
               />
             </div>
           </div>
@@ -151,6 +178,7 @@ const Checkout = () => {
               <input
                 type="text"
                 id="City"
+                name="town_city"
                 placeholder="Town / City"
                 className={styles.input}
                 required
@@ -162,7 +190,7 @@ const Checkout = () => {
                 State
               </label>
 
-              <Select placeholder='State' >
+              <Select onChange={handleChange} placeholder='State' >
                 {data.map((item, idx) => (
                   <Select.Option key={idx} value={item.value}>{item.name}</Select.Option>
                 ))}
@@ -173,19 +201,20 @@ const Checkout = () => {
 
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
-          <div className="grid gap-3">
-            <label htmlFor="Phone" className={styles.label}>
-              Phone
-            </label>
+            <div className="grid gap-3">
+              <label htmlFor="PhoneNumber" className={styles.label}>
+                Phone
+              </label>
 
-            <input
-              type="number"
-              id="Phone"
-              placeholder="Phone"
-              className={styles.input}
-              required
-            />
-          </div>
+              <input
+                type="number"
+                id="PhoneNumber"
+                name="phone"
+                placeholder="Phone"
+                className={styles.input}
+                required
+              />
+            </div>
 
             <div className="grid gap-3">
               <label htmlFor="PostalCode" className={styles.label}>
@@ -195,6 +224,7 @@ const Checkout = () => {
               <input
                 type="number"
                 id="PostalCode"
+                name="postalCode"
                 placeholder="Postal Code"
                 className={styles.input}
                 required
@@ -202,14 +232,9 @@ const Checkout = () => {
             </div>
           </div>
 
-        
+          <button>Deliver to this address</button>
 
         </form>
-
-        <div className="h-32 rounded-lg bg-gray-200">
-
-          <h1>Hello World</h1>
-        </div>
 
         <div className="rounded-lg bg-gray-200 p-2">
 
@@ -294,6 +319,27 @@ const Checkout = () => {
         </div>
       </div>
 
+
+
+      <div className="grid gap-2 mt-4 mb-3">
+        <h2 className="font-medium text-lg  text-black">Payment Method</h2>
+        <p className="text-base font-medium text-gray-800">All transactions are secure and encrypted.</p>
+      </div>
+      <div className="h-32 p-3 rounded-lg bg-gray-200">
+
+        <Radio.Group onChange={onChange} value={value}>
+          <Space direction="vertical">
+            <Radio className="flex " value={1}>
+              <h3 className="font-medium text-lg  text-black">Razor Pay</h3>
+              <p className="text-gray-800" >Make payments via UPI, card, net banking, and more</p>
+            </Radio>
+            <Radio value={2}>
+              <h3 className="font-medium text-lg  text-black">Cash on delivery</h3>
+              <p className="text-gray-800">Pay with cash upon delivery.</p>
+            </Radio>
+          </Space>
+        </Radio.Group>
+      </div>
 
 
     </div>

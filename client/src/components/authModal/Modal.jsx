@@ -60,10 +60,6 @@ const Modal = () => {
         setIsMember(!isMember)
     }
 
-
-
-
-
     return (
         <div className={` ${toggleAuthModal ? `${styles.show} ${styles.container}` : `${styles.container}`} `}>
             <div className={styles.modalContainer} >
