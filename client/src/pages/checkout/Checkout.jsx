@@ -237,12 +237,9 @@ const Checkout = () => {
         </form>
 
         <div className="rounded-lg bg-gray-200 p-2">
-
           <div className={styles.headingContainer} >
             <h2 className="text-lg font-medium" >Order Summary</h2>
           </div>
-
-
           <div
             className="relative w-screen max-w-sm border mt-0 mb-0 mr-auto ml-auto"
             aria-modal="true"
@@ -261,10 +258,14 @@ const Checkout = () => {
 
                   return (
                     <li key={id} className="flex items-center gap-3">
-                      <img
-                        src={imgUrl + img} alt={name}
-                        className="h-20 w-25 rounded object-cover"
-                      />
+                      <div className="h-20 w-25 rounded relative" >
+                        <img
+                          src={imgUrl + img} alt={name}
+                          className="h-full w-full rounded object-cover"
+                        />
+                        {/* {quantity > 1 && <span className={styles.badge} >{quantity}</span>} */}
+                        <span className={styles.badge} >{quantity}</span>
+                      </div>
 
                       <div className="w-full">
                         <h3 className="text-lg text-gray-900">{name}</h3>
@@ -321,24 +322,32 @@ const Checkout = () => {
 
 
 
-      <div className="grid gap-2 mt-4 mb-3">
-        <h2 className="font-medium text-lg  text-black">Payment Method</h2>
-        <p className="text-base font-medium text-gray-800">All transactions are secure and encrypted.</p>
-      </div>
-      <div className="h-32 p-3 rounded-lg bg-gray-200">
+      <div>
+        <div className="grid gap-2 mt-4 mb-3">
+          <h2 className="font-medium text-lg  text-black">Payment Method</h2>
+          <p className="text-base font-medium text-gray-800">All transactions are secure and encrypted.</p>
+        </div>
+        <div className=" p-3 rounded-lg bg-gray-200">
 
-        <Radio.Group onChange={onChange} value={value}>
-          <Space direction="vertical">
-            <Radio className="flex " value={1}>
-              <h3 className="font-medium text-lg  text-black">Razor Pay</h3>
-              <p className="text-gray-800" >Make payments via UPI, card, net banking, and more</p>
-            </Radio>
-            <Radio value={2}>
-              <h3 className="font-medium text-lg  text-black">Cash on delivery</h3>
-              <p className="text-gray-800">Pay with cash upon delivery.</p>
-            </Radio>
-          </Space>
-        </Radio.Group>
+          <Radio.Group onChange={onChange} value={value}>
+            <Space className="grid gap-4" direction="vertical">
+              <Radio className="flex " value={1}>
+                <h3 className="font-medium text-lg  text-black">Razor Pay</h3>
+                <p className="text-gray-800" >Make payments via UPI, card, net banking, and more</p>
+              </Radio>
+              <Radio value={2}>
+                <h3 className="font-medium text-lg  text-black">Cash on delivery</h3>
+                <p className="text-gray-800">Pay with cash upon delivery.</p>
+              </Radio>
+            </Space>
+          </Radio.Group>
+        </div>
+
+
+        <div className="flex justify-end" >
+          <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Pay</button>
+        </div>
+
       </div>
 
 

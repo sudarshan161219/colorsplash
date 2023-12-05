@@ -30,6 +30,17 @@
   width: 100%;
 }
 
-.gridContainer{
-    /* width: 100%; */
+.badge {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  width: 25px;
+  height: 25px;
+  background-color: #8b35fd;
+  color: var(--bg);
+  font-size: 0.9rem;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
