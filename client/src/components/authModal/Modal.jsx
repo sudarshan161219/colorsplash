@@ -19,6 +19,17 @@ const Modal = () => {
         setShow(!show)
     }
 
+    
+    useEffect(() => {
+        if (toggleAuthModal) {
+            document.body.style.overflow = "hidden";
+            document.body.style.overflowX = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+            document.body.style.overflowX = "hidden";
+
+        }
+    }, [toggleAuthModal]);
 
     const handleSubmit = (e) => {
         e.preventDefault();

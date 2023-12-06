@@ -12,12 +12,14 @@ import img from "../../assets/ecartbg.png"
 import { useAppContext } from "../../context/Context"
 import logo from "../../assets/colorlogo.webp"
 import { toast } from 'react-hot-toast'
+import emptyCart from "../../assets/undraw_empty_cart_co35.svg"
+
 
 const AddCart = () => {
     const products = useSelector(state => state.cart.products)
+    const { user, toggle_Auth_Modal } = useAppContext()
     const [isModalOpen, setIsModalOpen] = useState(false);
     const dispatch = useDispatch()
-    const { user } = useAppContext()
     const imgUrl = import.meta.env.VITE_APP_UPLOAD_URL
     const showModal = () => {
         setIsModalOpen(true);
@@ -108,7 +110,7 @@ const AddCart = () => {
         return (
             <div className={styles.noItems}>
 
-                <img className={styles.eimg} src={img} alt="Your cart is empty and sad" />
+                <img className={styles.eimg} src={emptyCart} alt="Your cart is empty and sad" />
                 <div className={styles.textContainer}>
                     <h1>Your cart is empty and sad {':('}</h1>
                     <p>Add something to make it happy!</p>
@@ -124,10 +126,10 @@ const AddCart = () => {
     return (
         <section className={styles.sec} >
 
-            <div className='mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8'>
+            {!user && <div className='mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8'>
                 {!user && <strong className="mt-4 mb-4  leading-relaxed" >Please fill in the fields below and click place order to complete your purchase!
                     Already registered? <Link className="text-blue-700 underline" to="/register"  >Please login here</Link></strong>}
-            </div>
+            </div>}
 
             <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
                 <div className="mx-auto max-w-3xl">
@@ -258,7 +260,7 @@ const AddCart = () => {
                                 <div className="flex justify-end">
                                     {!user ?
 
-                                        <button className="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600" to='/check-out ' onClick={showModal}>Checkout</button>
+                                        <button className="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600" to='/check-out ' onClick={toggle_Auth_Modal}>Checkout</button>
 
                                         :
                                         <Link className="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600" to='/check-out'>Checkout</Link>
@@ -269,11 +271,6 @@ const AddCart = () => {
                     </div>
                 </div>
             </div>
-            <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-            </Modal>
         </section>
     )
 }

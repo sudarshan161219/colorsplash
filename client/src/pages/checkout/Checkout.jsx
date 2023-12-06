@@ -18,9 +18,11 @@ import {
   Space
 } from 'antd';
 import { data } from "../../data/data"
+import { useAppContext } from "../../context/Context"
 
 const Checkout = () => {
   const products = useSelector(state => state.cart.products)
+  const { user } = useAppContext()
   const [componentSize, setComponentSize] = useState('default');
   const [selectedState, setSelectedState] = useState('')
   const [value, setValue] = useState(1);
@@ -54,7 +56,6 @@ const Checkout = () => {
   }
 
   const onChange = (e) => {
-    console.log('radio checked', e.target.value);
     setValue(e.target.value);
   };
 
@@ -232,7 +233,7 @@ const Checkout = () => {
             </div>
           </div>
 
-          <button>Deliver to this address</button>
+          <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Use this address</button>
 
         </form>
 
@@ -322,7 +323,7 @@ const Checkout = () => {
 
 
 
-      <div>
+      <div className={styles.paymentContainer}>
         <div className="grid gap-2 mt-4 mb-3">
           <h2 className="font-medium text-lg  text-black">Payment Method</h2>
           <p className="text-base font-medium text-gray-800">All transactions are secure and encrypted.</p>
@@ -345,7 +346,9 @@ const Checkout = () => {
 
 
         <div className="flex justify-end" >
-          <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Pay</button>
+
+          {value === 1 ? <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Pay</button> : <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Complete Order</button>}
+
         </div>
 
       </div>

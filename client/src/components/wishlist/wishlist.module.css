@@ -193,6 +193,16 @@
   font-size: 1.5rem;
 }
 
+.noItems {
+  height: 75vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+}
+
+
 @media screen and (min-width: 1000px) {
   .container {
     width: 750px;

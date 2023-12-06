@@ -8,6 +8,8 @@ import { addToCart } from "../../redux/cartReducer"
 import { removeWishlist } from "../../redux/wishlistReducer"
 import { AiOutlineDelete } from "react-icons/ai"
 import { CiHeart } from "react-icons/ci";
+import emptyWishlist from "../../assets/undraw_wishlist_re_m7tv.svg"
+import {Link} from "react-router-dom"
 
 const Wishlist = () => {
     const { isLoading } = useAppContext()
@@ -18,6 +20,22 @@ const Wishlist = () => {
         return <h1>Loading.....!</h1>
     }
 
+    if (wishlists.length === 0) {
+        return (
+            <div className={`${styles.noItems} mt-4`}>
+
+                <img className={styles.eimg} src={ emptyWishlist} alt="Your Wishlist is empty and sad" />
+                <div className={styles.textContainer}>
+                    <h1>Your Wishlist is empty and sad {':('}</h1>
+                    <p>Add something to make it happy!</p>
+                </div>
+
+                <div className='mt-3'>
+                    <Link to='/' className={`  ${styles.btn} ${styles.addToCartBtn}`}>Continue Shopping</Link>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className={styles.container}>
