@@ -73,14 +73,14 @@ const MyInfo = ({ user }) => {
 
     return (
         <>
-            <div className={`${styles.infoContainer} grid gap-5`}>
+            <div className={`${styles.infoContainer} grid gap-3 `}>
 
-                <div className="grid gap-4 my-4">
+                <div className="grid gap-3 my-3">
                     <h1 className="text-3xl font-semibold">My Info</h1>
                     <h2 className="text-2xl font-semibold">Contact Details</h2>
                 </div>
 
-                <div className="grid gap-4">
+                <div className="grid gap-2">
                     <span className="text-sm font-semibold text-gray-500">Your Name</span>
 
 
@@ -102,7 +102,7 @@ const MyInfo = ({ user }) => {
                     }
                 </div>
 
-                <div className="grid gap-4">
+                <div className="grid gap-2">
                     <span className="text-sm font-semibold text-gray-500">Email Address</span>
 
                     {
@@ -123,7 +123,7 @@ const MyInfo = ({ user }) => {
                     }
                 </div>
 
-                <div className="grid gap-4">
+                <div className="grid gap-2">
                     <span className="text-sm font-semibold text-gray-500">Phone Number</span>
                     {
                         toggleInput3 ?
@@ -147,7 +147,7 @@ const MyInfo = ({ user }) => {
 
 
 
-            <div className={`grid gap-5 ${styles.addressContainer}`} >
+            <div className={`grid gap-5 mt-5 ${styles.addressContainer}`} >
                 <div className="flex items-center justify-between">
                     <h1 className="text-3xl font-semibold">Address</h1>
                     <div className="flex items-center gap-4 cursor-pointer">

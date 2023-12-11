@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+// import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from "./products.module.css"
 import { BiFilter } from "react-icons/bi"
@@ -26,7 +26,7 @@ const Products = () => {
 
   const fetchUrl = fetchUrlMap.get(numID);
   const { page } = useFetch(fetchUrl);
-  const [current, setCurrent] = useState(1);
+  // const [current, setCurrent] = useState(1);
 
 
   const onPageChange = (page) => {

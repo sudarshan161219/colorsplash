@@ -19,7 +19,7 @@ const Section2 = () => {
     const [wsize, setWsize] = useState(0)
     const [isthere, setisThere] = useState(false)
     const [windowSize, setWindowSize] = useState(getWindowSize());
-    const { data, error, loading } = useFetch("/products?populate=*&filters[type][$eq]=New%20Arrivals")
+    const { data, error, loading } = useFetch("/products?populate=*&filters[type][$eq]=New%20Arrivals&pagination[start]=0&pagination[limit]=10")
 
 
     const carousel = useRef()

@@ -7,7 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import useFetch from "../../hooks/useFetch"
 import { AiOutlineArrowRight, AiOutlineArrowLeft } from "react-icons/ai"
-
+import { toast } from "react-hot-toast"
 
 function getWindowSize() {
     const { innerWidth, innerHeight } = window;
@@ -19,7 +19,7 @@ const Section3 = () => {
     const [isthere, setisThere] = useState(false)
     const [param, setParam] = useState(null)
     const [windowSize, setWindowSize] = useState(getWindowSize());
-    const { data, error, loading } = useFetch(`/products?populate=*&filters[categories]%20[id]%20[$eq]=1`);
+    const { data, error, loading } = useFetch(`/products?populate=*&filters[categories]%20[id]%20[$eq]=1&pagination[start]=0&pagination[limit]=10`);
 
     const carousel = useRef()
     const sliderRef = useRef(null);
@@ -126,7 +126,9 @@ const Section3 = () => {
     };
 
 
-
+    if (error) {
+        toast.error("Somthing went wrong!")
+    }
 
     return (
         <div ref={carousel} className='flex m-4 flex-col gap-5 '>
