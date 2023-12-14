@@ -36,6 +36,9 @@
     },
     "razorpay_signature": {
       "type": "string"
+    },
+    "address": {
+      "type": "text"
     }
   }
 }

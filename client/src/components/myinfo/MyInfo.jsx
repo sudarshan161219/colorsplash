@@ -17,9 +17,10 @@ import { data } from "../../data/data"
 import { CiEdit } from "react-icons/ci";
 import { IoAddSharp } from "react-icons/io5";
 import { useAppContext } from "../../context/Context";
+import { toast } from "react-hot-toast";
 
 const MyInfo = ({ user }) => {
-    const { updateUser } = useAppContext()
+    const { addAddress } = useAppContext()
     const [componentSize, setComponentSize] = useState('default');
     const [toggle, setToggle] = useState(false)
     const [toggleInput, setToggleInput] = useState(false)
@@ -41,8 +42,36 @@ const MyInfo = ({ user }) => {
         });
     }, [user]);
 
+    // let jsonObject = {
+    //     "firstname": "sudarshan",
+    //     "lastname": "hosalli"
+    // };
+
+    // console.log(jsonObject);
+
     const onFinish = (values) => {
-        updateUser(user.id, values)
+        const {
+            firstname, lastname, Street_Address, Town_City, State, Country_Region, Phone, Postal_Code } = values
+        // updateUser(user.id, values)
+        const town_city_postal_code = Town_City + "-" + Postal_Code
+        const customer_address = firstname + " " + lastname + ", " + Street_Address + ", " + town_city_postal_code + ", " + State + ", " + Country_Region + " , " + Phone
+        const userid = user.id
+
+        if (!firstname, !lastname, !Street_Address, !Town_City, !State, !Country_Region, !Phone, !Postal_Code) {
+            toast.error("please fill all fields!");
+        }
+
+        let data = {
+            "userid": userid,
+            "customer_address": customer_address
+        };
+
+        // let jsonString = JSON.stringify(jsonObject);
+
+
+
+        // updateUser(user.id, values)
+        addAddress(data)
         if (toggle) {
             setToggle(false)
         }
@@ -154,7 +183,7 @@ const MyInfo = ({ user }) => {
 
                         {
 
-                            user?.Street_Address !=="" ?
+                            user?.Street_Address !== "" ?
 
                                 <div className="flex items-center gap-2" onClick={() => setToggle(!toggle)}>
                                     <CiEdit />
@@ -170,17 +199,16 @@ const MyInfo = ({ user }) => {
                     </div>
                 </div>
 
-                <div className={`grid gap-5 ${styles.box}`}>
+                {/* <div className={`grid gap-3 ${styles.box}`}>
                     <h1 className="text-1xl font-medium">{user?.username}</h1>
-                    <span className="text-sm font-semibold text-gray-500">{user?.phoneNumber}</span>
                     <ul>
-                        <li className="text-gray-800 text-base">Street Address: {user?.Street_Address}</li>
-                        <li className="text-gray-800 text-base">Apt, suite, unit: {user?.Apt_suite_unit}</li>
-                        <li className="text-gray-800 text-base">Town / City: {user?.Town_City}</li>
-                        <li className="text-gray-800 text-base">State: {user?.State}</li>
-                        <li className="text-gray-800 text-base">Postal Code: {user?.Postal_Code}</li>
+                        <li className="text-gray-800 text-base">{user?.Street_Address}</li>
+                        <li className="text-gray-800 text-base">{user?.Apt_suite_unit}</li>
+                        <li className="text-gray-800 text-base">{user?.Town_City} - {user?.Postal_Code}</li>
+                        <li className="text-gray-800 text-base">{user?.State} </li>
+                        <li className="text-gray-800 text-base mt-3 ">Mobile: {user?.phoneNumber}</li>
                     </ul>
-                </div>
+                </div> */}
             </div>
 
             {toggle &&
@@ -213,9 +241,9 @@ const MyInfo = ({ user }) => {
                         <Input placeholder="Street Address" />
                     </Form.Item>
 
-                    <Form.Item name="Apt_suite_unit" className="font-medium" label="Apt, suite, unit">
+                    {/* <Form.Item name="Apt_suite_unit" className="font-medium" label="Apt, suite, unit">
                         <Input placeholder="apartment, suite, unit, etc. (optional)" />
-                    </Form.Item>
+                    </Form.Item> */}
 
                     <Form.Item name="Town_City" className="font-medium" label="City*">
                         <Input placeholder="Town / City" />

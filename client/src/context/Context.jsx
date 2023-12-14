@@ -158,27 +158,50 @@ const ContextProvider = ({ children }) => {
         }
     };
 
-    const updateUser = async (userId, updatedUserData) => {
+    const addAddress = async (Address) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.put(`http://localhost:1337/api/users/${userId}`, updatedUserData, {
+            const response = await axios.post(`http://localhost:1337/api/user-addresses`, Address, {
                 headers: {
-                    Authorization: `Bearer ${token}` // Include the JWT token for authentication
+                    Authorization: `Bearer ${token}`
                 }
             });
-
             if (response.status === 200) {
-                const userProfile = response.data;
-                dispatch({ type: GET_CURRENT_USER_SUCCESS, payload: { userProfile } })
+                // const userProfile = response.data;
+                // dispatch({ type: GET_CURRENT_USER_SUCCESS, payload: { userProfile } })
+                console.log(response);
             } else {
                 console.error('Update failed:', response.data || 'Something went wrong');
-                // Handle update failure or unexpected status codes
             }
         } catch (error) {
             console.error('Error updating user:', error.message || error);
-            // Handle other errors, such as network issues
         }
+
     };
+
+
+    // const updateAddress = async (userId, updatedUserData) => {
+    //     const token = localStorage.getItem('token');
+    //     try {
+    //         const response = await axios.put(`http://localhost:1337/api/users/${userId}`, updatedUserData, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}` // Include the JWT token for authentication
+    //             }
+    //         });
+
+    //         if (response.status === 200) {
+    //             const userProfile = response.data;
+    //             dispatch({ type: GET_CURRENT_USER_SUCCESS, payload: { userProfile } })
+    //         } else {
+    //             console.error('Update failed:', response.data || 'Something went wrong');
+    //             // Handle update failure or unexpected status codes
+    //         }
+    //     } catch (error) {
+    //         console.error('Error updating user:', error.message || error);
+    //         // Handle other errors, such as network issues
+    //     }
+    // };
+
 
     const handle_Sub_Categories = (sub_categories) => {
         dispatch({ type: SUB_CATEGORIES, payload: { sub_categories } })
@@ -210,7 +233,7 @@ const ContextProvider = ({ children }) => {
 
     return (
         <Context.Provider value={{
-            ...state, toggleMenuFn, loginFn, registerFn, logoutUser, updateUser, handle_Sub_Categories,
+            ...state, toggleMenuFn, loginFn, registerFn, logoutUser, addAddress, handle_Sub_Categories,
             handle_Sort_Price,
             handle_Filter_price,
             handle_Filter_Modal,

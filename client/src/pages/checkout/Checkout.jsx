@@ -2,7 +2,6 @@ import styles from "./checkout.module.css"
 import { useState } from "react";
 import currencyFormatter from 'currency-formatter';
 import { useSelector } from "react-redux"
-
 import {
   Button,
   Cascader,
@@ -15,7 +14,8 @@ import {
   Switch,
   TreeSelect,
   Flex,
-  Space
+  Space,
+  Steps
 } from 'antd';
 import { data } from "../../data/data"
 import { useAppContext } from "../../context/Context"
@@ -264,7 +264,6 @@ const Checkout = () => {
                           src={imgUrl + img} alt={name}
                           className="h-full w-full rounded object-cover"
                         />
-                        {/* {quantity > 1 && <span className={styles.badge} >{quantity}</span>} */}
                         <span className={styles.badge} >{quantity}</span>
                       </div>
 
@@ -347,12 +346,11 @@ const Checkout = () => {
 
         <div className="flex justify-end" >
 
-          {value === 1 ? <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Pay</button> : <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Complete Order</button>}
+          {value === 1 ? <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Pay Now</button> : <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Place Order</button>}
 
         </div>
 
       </div>
-
 
     </div>
   )

@@ -68,29 +68,11 @@
     "phoneNumber": {
       "type": "biginteger"
     },
-    "firstname": {
-      "type": "string"
-    },
-    "lastname": {
-      "type": "string"
-    },
-    "Country_Region": {
-      "type": "string"
-    },
-    "Street_Address": {
-      "type": "text"
-    },
-    "Apt_suite_unit": {
-      "type": "text"
-    },
-    "Town_City": {
-      "type": "string"
-    },
-    "State": {
-      "type": "string"
-    },
-    "Postal_Code": {
-      "type": "biginteger"
+    "user_addresses": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::user-address.user-address",
+      "mappedBy": "customers"
     }
   }
 }

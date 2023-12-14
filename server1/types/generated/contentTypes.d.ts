@@ -660,14 +660,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'plugin::users-permissions.role'
     >;
     phoneNumber: Attribute.BigInteger;
-    firstname: Attribute.String;
-    lastname: Attribute.String;
-    Country_Region: Attribute.String;
-    Street_Address: Attribute.Text;
-    Apt_suite_unit: Attribute.Text;
-    Town_City: Attribute.String;
-    State: Attribute.String;
-    Postal_Code: Attribute.BigInteger;
+    user_addresses: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::user-address.user-address'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -747,6 +744,7 @@ export interface ApiOrderOrder extends Schema.CollectionType {
     razorpay_payment_id: Attribute.String;
     razorpay_order_id: Attribute.String;
     razorpay_signature: Attribute.String;
+    address: Attribute.Text;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -858,6 +856,43 @@ export interface ApiSubCategorySubCategory extends Schema.CollectionType {
   };
 }
 
+export interface ApiUserAddressUserAddress extends Schema.CollectionType {
+  collectionName: 'user_addresses';
+  info: {
+    singularName: 'user-address';
+    pluralName: 'user-addresses';
+    displayName: 'user_address';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    userid: Attribute.UID;
+    customers: Attribute.Relation<
+      'api::user-address.user-address',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    customer_address: Attribute.Text;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::user-address.user-address',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::user-address.user-address',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -878,6 +913,7 @@ declare module '@strapi/types' {
       'api::order.order': ApiOrderOrder;
       'api::product.product': ApiProductProduct;
       'api::sub-category.sub-category': ApiSubCategorySubCategory;
+      'api::user-address.user-address': ApiUserAddressUserAddress;
     }
   }
 }
