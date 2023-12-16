@@ -67,12 +67,6 @@
     },
     "phoneNumber": {
       "type": "biginteger"
-    },
-    "user_addresses": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::user-address.user-address",
-      "mappedBy": "customers"
     }
   }
 }

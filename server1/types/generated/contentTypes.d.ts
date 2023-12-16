@@ -660,11 +660,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'plugin::users-permissions.role'
     >;
     phoneNumber: Attribute.BigInteger;
-    user_addresses: Attribute.Relation<
-      'plugin::users-permissions.user',
-      'manyToMany',
-      'api::user-address.user-address'
-    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -868,13 +863,16 @@ export interface ApiUserAddressUserAddress extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    userid: Attribute.UID;
-    customers: Attribute.Relation<
-      'api::user-address.user-address',
-      'manyToMany',
-      'plugin::users-permissions.user'
-    >;
     customer_address: Attribute.Text;
+    customer_name: Attribute.String;
+    customer_email: Attribute.Email;
+    customer_Id: Attribute.BigInteger;
+    Street_Address: Attribute.Text;
+    Town_City: Attribute.String;
+    State: Attribute.String;
+    Country_Region: Attribute.String;
+    Phone: Attribute.BigInteger;
+    Postal_Code: Attribute.BigInteger;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

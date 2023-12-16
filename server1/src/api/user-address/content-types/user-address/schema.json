@@ -12,17 +12,35 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "userid": {
-      "type": "uid"
-    },
-    "customers": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "plugin::users-permissions.user",
-      "inversedBy": "user_addresses"
-    },
     "customer_address": {
       "type": "text"
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "customer_email": {
+      "type": "email"
+    },
+    "customer_Id": {
+      "type": "biginteger"
+    },
+    "Street_Address": {
+      "type": "text"
+    },
+    "Town_City": {
+      "type": "string"
+    },
+    "State": {
+      "type": "string"
+    },
+    "Country_Region": {
+      "type": "string"
+    },
+    "Phone": {
+      "type": "biginteger"
+    },
+    "Postal_Code": {
+      "type": "biginteger"
     }
   }
 }

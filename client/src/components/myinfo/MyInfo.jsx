@@ -55,26 +55,46 @@ const MyInfo = ({ user }) => {
         // updateUser(user.id, values)
         const town_city_postal_code = Town_City + "-" + Postal_Code
         const customer_address = firstname + " " + lastname + ", " + Street_Address + ", " + town_city_postal_code + ", " + State + ", " + Country_Region + " , " + Phone
-        const userid = user.id
+        const userid = user.id.toString()
+        const useridnum = user.id
+        const customer_email = user?.email
+
 
         if (!firstname, !lastname, !Street_Address, !Town_City, !State, !Country_Region, !Phone, !Postal_Code) {
             toast.error("please fill all fields!");
         }
 
-        let data = {
-            "userid": userid,
-            "customer_address": customer_address
+        // let data = {
+        //     "userid": userid,
+        //     "customer_address": customer_address
+        // };
+
+        let payload = {
+            "data": {
+                // "userid": userid,
+                "customer_Id": useridnum,
+                "customer_name": firstname + " " + lastname,
+                "Street_Address": Street_Address,
+                "Town_City": Town_City,
+                "State": State,
+                "Country_Region": Country_Region,
+                "Phone": Phone,
+                "Postal_Code": Postal_Code,
+                "customer_email": customer_email,
+                "customer_address": customer_address
+            }
         };
 
-        // let jsonString = JSON.stringify(jsonObject);
+        // let jsonString = JSON.stringify(data);
 
 
 
         // updateUser(user.id, values)
-        addAddress(data)
-        if (toggle) {
-            setToggle(false)
-        }
+        addAddress(payload)
+        console.log(payload);
+        // if (toggle) {
+        //     setToggle(false)
+        // }
     };
 
     const handleChange = (e) => {

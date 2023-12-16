@@ -163,7 +163,8 @@ const ContextProvider = ({ children }) => {
         try {
             const response = await axios.post(`http://localhost:1337/api/user-addresses`, Address, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
                 }
             });
             if (response.status === 200) {
