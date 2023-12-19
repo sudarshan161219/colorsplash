@@ -65,9 +65,9 @@
 
 @media screen and (min-width: 1024px) {
   .orderSummary {
-    height: 400px;
+    /* height: 400px; */
     overflow: hidden;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
   }
 
   .orderSummary::-webkit-scrollbar {

@@ -1,32 +1,29 @@
 import styles from "./checkout.module.css"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import currencyFormatter from 'currency-formatter';
 import { useSelector } from "react-redux"
 import {
-  Button,
-  Cascader,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
   Radio,
   Select,
-  Switch,
-  TreeSelect,
-  Flex,
   Space,
-  Steps
 } from 'antd';
 import { data } from "../../data/data"
 import { useAppContext } from "../../context/Context"
 
 const Checkout = () => {
   const products = useSelector(state => state.cart.products)
-  const { user } = useAppContext()
+  const { user, getAddresses, userAddress } = useAppContext()
   const [componentSize, setComponentSize] = useState('default');
   const [selectedState, setSelectedState] = useState('')
   const [value, setValue] = useState(1);
+  const [value1, setValue1] = useState(1);
   const imgUrl = import.meta.env.VITE_APP_UPLOAD_URL
+
+
+
+  useEffect(() => {
+    getAddresses(user?.id)
+  }, [user?.id]);
 
   const totalPrice = products.reduce((accumulator, currentItem) => {
     const itemTotal = currentItem.price * currentItem.quantity;
@@ -59,9 +56,16 @@ const Checkout = () => {
     setValue(e.target.value);
   };
 
+  const onChangeAddress = (e) => {
+    setValue1(e.target.value1);
+
+  }
+
   const handleChange = (value) => {
     setSelectedState(value)
   };
+
+
 
   return (
     <div className="p-3">
@@ -233,7 +237,7 @@ const Checkout = () => {
             </div>
           </div>
 
-          <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Use this address</button>
+          <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Add New Address</button>
 
         </form>
 
@@ -248,7 +252,7 @@ const Checkout = () => {
             tabIndex="-1"
           >
             <div className='mt-4 space-y-6'>
-              <ul className={` ${styles.orderSummary} space-y-4`}>
+              <ul style={{ height: products.length >= 4 && '410px', overflowY: products.length >= 4 && 'scroll' }} className={` ${styles.orderSummary} space-y-4`}>
 
                 {products.map((item) => {
                   const { id, img, name, color, size, shipping, price, quantity } = item
@@ -322,6 +326,34 @@ const Checkout = () => {
 
 
 
+      {
+        userAddress.length > 0 &&
+        <div className={styles.paymentContainer}>
+          <div className="grid gap-2 mt-4 mb-3">
+            <h2 className="font-medium text-lg  text-black">Shipping Address</h2>
+            <p className="text-base font-medium text-gray-800">Select the address.</p>
+          </div>
+          <div className=" p-3 rounded-lg bg-gray-200">
+
+            <Radio.Group onChange={onChangeAddress} value={value1}>
+              <Space className="grid gap-4" direction="vertical">
+                {userAddress.map((item) => (
+                  <Radio key={item?.id} className="flex " value={1}>
+                    <h3 className="font-medium text-lg  text-black">{item.attributes.customer_name}</h3>
+                    <p className="text-gray-800" >{item.attributes.customer_address}</p>
+                  </Radio>
+                ))}
+              </Space>
+            </Radio.Group>
+          </div>
+          {/* <div className="flex justify-end" >
+
+          {value === 1 ? <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Pay Now</button> : <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Place Order</button>}
+
+        </div> */}
+        </div>}
+
+
       <div className={styles.paymentContainer}>
         <div className="grid gap-2 mt-4 mb-3">
           <h2 className="font-medium text-lg  text-black">Payment Method</h2>
@@ -352,7 +384,7 @@ const Checkout = () => {
 
       </div>
 
-    </div>
+    </div >
   )
 }
 
