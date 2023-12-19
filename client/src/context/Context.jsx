@@ -20,7 +20,10 @@ import {
     FILTER_BY_PRICE,
     FILTER_MODAL,
     PAGE_NUM,
-    TOGGLE_AUTH_MODAL
+    TOGGLE_AUTH_MODAL,
+    GET_USER_ADDRESS_BEGIN,
+    GET_USER_ADDRESS_SUCCESS,
+    GET_USER_ADDRESS_ERROR
 } from "./action"
 
 
@@ -37,6 +40,7 @@ const initialState = {
     toggleSearch: false,
     user: null,
     sub_category: [],
+    userAddress: [],
     sortprice: 'asc',
     filterprice: 0,
     pagenum: 1.
@@ -118,7 +122,7 @@ const ContextProvider = ({ children }) => {
             });
 
             localStorage.setItem('token', jwt);
-            toast.success("Login Successful!,  Redirecting.....");
+            toast.success("Login Successfull....!,");
         } catch (error) {
             toast.error(error.response.data.msg);
             dispatch({
@@ -168,11 +172,50 @@ const ContextProvider = ({ children }) => {
                 }
             });
             if (response.status === 200) {
-                // const userProfile = response.data;
-                // dispatch({ type: GET_CURRENT_USER_SUCCESS, payload: { userProfile } })
-                console.log(response);
+                toast.success("Address Added...!");
             } else {
-                console.error('Update failed:', response.data || 'Something went wrong');
+                toast.error("Something went wrong, please try again later.,");
+            }
+        } catch (error) {
+            console.error('Error updating user:', error.message || error);
+        }
+
+    };
+
+    const getAddresses = async (user_id) => {
+        const token = localStorage.getItem('token');
+        dispatch({ type: GET_USER_ADDRESS_BEGIN })
+        try {
+            const { data } = await axios.get(`http://localhost:1337/api/user-addresses?filters[customer_Id][$eq]=${user_id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+            const resData = data.data
+
+            dispatch({ type: GET_USER_ADDRESS_SUCCESS, payload: { resData } })
+
+        } catch (error) {
+            dispatch({ type: GET_USER_ADDRESS_ERROR })
+            toast.error("Something went wrong, please try again later.,");
+
+        }
+    }
+
+
+    const update_preference_default_Address = async (Address, id) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.put(`http://localhost:1337/api/user-addresses/${id}`, Address, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (response.status === 200) {
+                toast.success("Updated your address preference...!");
+            } else {
+                toast.error("Something went wrong, please try again later.,");
             }
         } catch (error) {
             console.error('Error updating user:', error.message || error);
@@ -181,27 +224,67 @@ const ContextProvider = ({ children }) => {
     };
 
 
-    // const updateAddress = async (userId, updatedUserData) => {
-    //     const token = localStorage.getItem('token');
-    //     try {
-    //         const response = await axios.put(`http://localhost:1337/api/users/${userId}`, updatedUserData, {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}` // Include the JWT token for authentication
-    //             }
-    //         });
+    const update_Address = async (Address, id) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.put(`http://localhost:1337/api/user-addresses/${id}`, Address, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (response.status === 200) {
+                toast.success("Your Address updated successfuly...!");
+            } else {
+                toast.error("Something went wrong, please try again later.,");
+            }
+        } catch (error) {
+            console.error('Error updating user:', error.message || error);
+        }
 
-    //         if (response.status === 200) {
-    //             const userProfile = response.data;
-    //             dispatch({ type: GET_CURRENT_USER_SUCCESS, payload: { userProfile } })
-    //         } else {
-    //             console.error('Update failed:', response.data || 'Something went wrong');
-    //             // Handle update failure or unexpected status codes
-    //         }
-    //     } catch (error) {
-    //         console.error('Error updating user:', error.message || error);
-    //         // Handle other errors, such as network issues
-    //     }
-    // };
+    };
+
+
+    const delete_Address = async (id) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.delete(`http://localhost:1337/api/user-addresses/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            if (response.status === 200) {
+                toast.success("Deleted Successfully...!");
+            } else {
+                toast.error("Something went wrong, please try again later.");
+            }
+        } catch (error) {
+            console.error('Error updating user:', error.message || error);
+        }
+
+    };
+
+    const updateUser = async (userId, updatedUserData) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.put(`http://localhost:1337/api/users/${userId}`, updatedUserData, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Include the JWT token for authentication
+                }
+            });
+
+            if (response.status === 200) {
+                const userProfile = response.data;
+                dispatch({ type: GET_CURRENT_USER_SUCCESS, payload: { userProfile } })
+            } else {
+                console.error('Update failed:', response.data || 'Something went wrong');
+                // Handle update failure or unexpected status codes
+            }
+        } catch (error) {
+            console.error('Error updating user:', error.message || error);
+            // Handle other errors, such as network issues
+        }
+    };
 
 
     const handle_Sub_Categories = (sub_categories) => {
@@ -234,12 +317,16 @@ const ContextProvider = ({ children }) => {
 
     return (
         <Context.Provider value={{
-            ...state, toggleMenuFn, loginFn, registerFn, logoutUser, addAddress, handle_Sub_Categories,
+            ...state, toggleMenuFn, loginFn, registerFn, logoutUser, addAddress, updateUser, handle_Sub_Categories,
             handle_Sort_Price,
             handle_Filter_price,
             handle_Filter_Modal,
             handle_page_num,
-            toggle_Auth_Modal
+            toggle_Auth_Modal,
+            getAddresses,
+            update_preference_default_Address,
+            delete_Address,
+            update_Address
         }} >
             {children}
         </Context.Provider>

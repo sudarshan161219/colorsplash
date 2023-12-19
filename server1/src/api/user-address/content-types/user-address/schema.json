@@ -41,6 +41,16 @@
     },
     "Postal_Code": {
       "type": "biginteger"
+    },
+    "default_address": {
+      "type": "boolean",
+      "default": false
+    },
+    "firstname": {
+      "type": "string"
+    },
+    "lastname": {
+      "type": "string"
     }
   }
 }

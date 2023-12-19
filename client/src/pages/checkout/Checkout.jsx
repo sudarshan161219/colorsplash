@@ -69,7 +69,7 @@ const Checkout = () => {
       <strong className="font-medium text-lg mt-4 mb-4">Billing Details</strong>
 
 
-      <div className={` items-baseline p-3 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8  mt-4 mb-4`}>
+      <div className="items-baseline  grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8  mt-4 mb-4">
         <form onSubmit={handleSubmit} className=" flex flex-col gap-4 lg:col-span-2 ">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
             <div className="grid gap-3">
@@ -247,8 +247,8 @@ const Checkout = () => {
             role="dialog"
             tabIndex="-1"
           >
-            <div className="mt-4 space-y-6">
-              <ul className="space-y-4">
+            <div className='mt-4 space-y-6'>
+              <ul className={` ${styles.orderSummary} space-y-4`}>
 
                 {products.map((item) => {
                   const { id, img, name, color, size, shipping, price, quantity } = item

@@ -1,6 +1,10 @@
 import styles from "./index.module.css"
+import { UsePageTitle } from "../../components/export"
 
 const Page_one = () => {
+
+    UsePageTitle("Color Splash - Terms and Conditions")
+
     return (
         <div className={styles.container}>
             <h1>Terms and Conditions for Color Splash</h1>
@@ -37,13 +41,13 @@ const Page_one = () => {
 
             <div className={styles.containers}>
                 <h2>Your Content</h2>
-                <p>In these Website Standard Terms and Conditions, "Your Content" shall mean any audio, video text, images or other material you choose to display on this Website. By displaying Your Content, you grant  Color Splash a non-exclusive, worldwide irrevocable, sub licensable license to use, reproduce, adapt, publish, translate and distribute it in any and all media.</p>
-                <p>Your Content must be your own and must not be invading any third-party's rights. Color Splash reserves the right to remove any of Your Content from this Website at any time without notice.</p>
+                <p>In these Website Standard Terms and Conditions, Your Content shall mean any audio, video text, images or other material you choose to display on this Website. By displaying Your Content, you grant  Color Splash a non-exclusive, worldwide irrevocable, sub licensable license to use, reproduce, adapt, publish, translate and distribute it in any and all media.</p>
+                <p>Your Content must be your own and must not be invading any {"third-party's"} rights. Color Splash reserves the right to remove any of Your Content from this Website at any time without notice.</p>
             </div>
 
             <div className={styles.containers}>
                 <h2>No warranties</h2>
-                <p>This Website is provided "as is," with all faults, and Color Splash express no representations or warranties, of any kind related to this Website or the materials contained on this Website. Also, nothing contained on this Website shall be interpreted as advising you.</p>
+                <p>This Website is provided {`"as is,"`} with all faults, and Color Splash express no representations or warranties, of any kind related to this Website or the materials contained on this Website. Also, nothing contained on this Website shall be interpreted as advising you.</p>
             </div>
 
             <div className={styles.containers}>

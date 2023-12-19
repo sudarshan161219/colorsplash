@@ -33,29 +33,8 @@ const Product = () => {
   const products = useSelector(state => state.cart.products)
   const [wishlistedProduct, setWishlistedProduct] = useState([])
   const [cartProduct, setCartProduct] = useState([])
-
-  // const sliderRef = useRef(null);
+;
   const dispatch = useDispatch()
-
-  // const settings = {
-  //   infinite: true,
-  //   speed: 500,
-  //   slidesToShow: 1,
-  //   slidesToScroll: 1,
-  //   autoplay: true,
-  //   autoplaySpeed: 3000,
-  // };
-
-  // console.log(products);
-  // console.log(data);
-
-  // const goToNext = () => {
-  //   sliderRef.current.slickNext();
-  // };
-
-  // const goToPrev = () => {
-  //   sliderRef.current.slickPrev();
-  // };
 
   const imgUrl = import.meta.env.VITE_APP_UPLOAD_URL
 

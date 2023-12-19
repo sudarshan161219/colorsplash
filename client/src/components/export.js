@@ -18,6 +18,7 @@ import Wishlist from "./wishlist/Wishlist.jsx";
 import SimilarProductsCard from "./similar_products/SimilarProductsCard.jsx";
 import Filters from "./filters/Filters.jsx";
 import Modal from "./authModal/Modal.jsx";
+import UsePageTitle from "./metadata/UsePageTitle.jsx"
 
 export {
   Navbar,
@@ -40,4 +41,5 @@ export {
   PageLoading,
   Filters,
   Modal,
+  UsePageTitle
 };

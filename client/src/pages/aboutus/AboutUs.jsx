@@ -1,40 +1,13 @@
 import styles from "./aboutus.module.css"
-
-
-
-
-
-
-
-
-
-
-
-//                 <div>
-//                     <strong> Shop with Confidence</strong>
-//                     <p>With <span>Color Splash</span>, you can shop with confidence, knowing that  {"you're"} choosing more than just clothing;{"you're"} choosing a brand that celebrates your individuality and values your impact on the world.
-//                     </p>
-//                 </div>
-
-
-//                 <div className={styles.last}>
-
-
-//                     <h2>Thank you for choosing Color Splash </h2>
-
-//                     <span>
-//                         We look forward to being a part of your style journey.</span>
-//                 </div>
-//             </div>
-//         </div>
-
-
-
+import { UsePageTitle } from "../../components/export"
 const AboutUs = () => {
+
+    UsePageTitle("About Us")
+
     return (
 
         <div className='mb-4'>
-            <div className="p-8 md:p-12 lg:px-16 lg:py-24">
+            <div className="md:p-12 lg:px-16 lg:py-24">
                 <div className={styles.headingContainer} >
                     <h1 className={styles.h1}>About Us</h1>
                 </div>

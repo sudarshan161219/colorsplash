@@ -18,7 +18,10 @@ import {
     SORT_BY_PRICE,
     FILTER_MODAL,
     FILTER_BY_PRICE,
-    PAGE_NUM
+    PAGE_NUM,
+    GET_USER_ADDRESS_BEGIN,
+    GET_USER_ADDRESS_SUCCESS,
+    GET_USER_ADDRESS_ERROR
 } from "./action"
 
 
@@ -118,6 +121,32 @@ const reducer = (state, action) => {
         return {
             ...state,
             userUpdating: false,
+        };
+    }
+
+
+    if (action.type === GET_USER_ADDRESS_BEGIN) {
+        return {
+            ...state,
+            isLoading: true
+        }
+    }
+
+    if (action.type === GET_USER_ADDRESS_SUCCESS) {
+
+        return {
+            ...state,
+            isLoading: false,
+            // user: action.payload.userProfile,
+            userAddress: action.payload.resData
+        }
+    }
+
+
+    if (action.type === GET_USER_ADDRESS_ERROR) {
+        return {
+            ...state,
+            isLoading: false,
         };
     }
 

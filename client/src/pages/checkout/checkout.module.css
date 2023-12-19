@@ -6,7 +6,6 @@
   font-weight: 500;
 }
 
-
 .input::-webkit-outer-spin-button,
 .input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -14,7 +13,7 @@
 }
 
 /* Firefox */
-.input[type=number] {
+.input[type="number"] {
   -moz-appearance: textfield;
 }
 
@@ -57,10 +56,30 @@
   justify-content: center;
 }
 
-
-@media screen and (min-width:650px ) {
-  .paymentContainer{
+@media screen and (min-width: 650px) {
+  .paymentContainer {
     width: 500px;
     padding: 1.5rem;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .orderSummary {
+    height: 400px;
+    overflow: hidden;
+    overflow-y: scroll;
+  }
+
+  .orderSummary::-webkit-scrollbar {
+    width: 0.4em;
+  }
+
+  .orderSummary::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgb(255, 255, 255);
+  }
+
+  .orderSummary::-webkit-scrollbar-thumb {
+    background-color: rgb(44, 42, 42);
+    outline: 1px solid rgb(255, 255, 255);
   }
 }

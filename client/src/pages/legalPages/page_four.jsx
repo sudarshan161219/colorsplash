@@ -1,6 +1,13 @@
 import styles from "./index.module.css"
+import { UsePageTitle } from "../../components/export"
+
 
 const Page_four = () => {
+
+
+
+    UsePageTitle("Color Splash - Exchange Policy")
+
     return (
         <div className={styles.container}>
             <h1>Exchange Policy for Color Splash</h1>
@@ -36,7 +43,7 @@ const Page_four = () => {
             </div>
 
             <div>
-                <p>Understanding a {"brand's"} return and exchange policy before making a purchase is crucial. Clear communication of these policies ensures a smoother customer experience. It's important to note that specific details may vary among different brands and retailers. For precise information, checking the {"brand's"} official website or contacting their customer service is recommended.
+                <p>Understanding a {"brand's"} return and exchange policy before making a purchase is crucial. Clear communication of these policies ensures a smoother customer experience. {"It's"} important to note that specific details may vary among different brands and retailers. For precise information, checking the {"brand's"} official website or contacting their customer service is recommended.
                 </p>
             </div>
 

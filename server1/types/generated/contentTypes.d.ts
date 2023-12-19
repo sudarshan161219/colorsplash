@@ -873,6 +873,9 @@ export interface ApiUserAddressUserAddress extends Schema.CollectionType {
     Country_Region: Attribute.String;
     Phone: Attribute.BigInteger;
     Postal_Code: Attribute.BigInteger;
+    default_address: Attribute.Boolean & Attribute.DefaultTo<false>;
+    firstname: Attribute.String;
+    lastname: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

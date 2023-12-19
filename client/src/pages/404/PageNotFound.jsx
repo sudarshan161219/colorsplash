@@ -1,8 +1,13 @@
 import { Link } from "react-router-dom"
 import styles from "./index.module.css"
 import img from "../../assets/undraw_page_not_found_re_e9o6.svg"
+import { UsePageTitle } from "../../components/export"
+
 
 const PageNotFound = () => {
+
+    UsePageTitle("404 - Page not found")
+
     return (
         <div className="py-6 sm:py-8 lg:py-12">
             <div className="mx-auto max-w-screen-2xl px-4 md:px-8">

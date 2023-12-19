@@ -3,26 +3,19 @@ import styles from "./contact.module.css"
 import {
   AiOutlinePhone,
   AiOutlineMail,
-  AiOutlineTwitter,
   AiOutlineInstagram,
 } from "react-icons/ai"
 import { MdOutlineLocationOn } from "react-icons/md"
-import { BsFacebook } from "react-icons/bs"
 import emailjs from '@emailjs/browser';
-
-
+import { UsePageTitle } from "../../components/export"
 
 const Contact = () => {
   const form = useRef();
+
+
+  UsePageTitle("Contact Us")
+
   const socialLinks = [
-    // {
-    //   icon: <BsFacebook className={styles.icons} />,
-    //   link: "https://www.facebook.com/magickdcompany/",
-    // },
-    // {
-    //   icon: <AiOutlineTwitter className={styles.icons} />,
-    //   link: "https://twitter.com/Magickdcompany",
-    // },
     {
       icon: <AiOutlineInstagram className={styles.icons} />,
       link: "https://www.instagram.com/colorsplash0/",
@@ -59,11 +52,6 @@ const Contact = () => {
             <label className={styles.label}>First Name</label>
           </div>
 
-          {/* <div className={styles.group}>
-            <input name='lastName' className={styles.input} type="text" required />
-            <span className={styles.bar}></span>
-            <label className={styles.label}>Last Name</label>
-          </div> */}
 
           <div className={styles.group}>
             <input type="email" name="user_email" className={styles.input} required />

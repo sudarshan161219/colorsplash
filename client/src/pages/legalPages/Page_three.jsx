@@ -1,6 +1,10 @@
 import styles from "./index.module.css"
+import { UsePageTitle } from "../../components/export"
 
 const Page_three = () => {
+
+  UsePageTitle("Color Splash - Cookie Policy")
+
   return (
     <div className={styles.container}>
       <h1>Cookie Policy for Color Splash</h1>
@@ -10,7 +14,7 @@ const Page_three = () => {
       <div className={styles.containers}>
         <h3>What Are Cookies</h3>
 
-        <p>As is common practice with almost all professional websites this site uses cookies, which are tiny files that are downloaded to your computer, to improve your experience. This page describes what information they gather, how we use it and why we sometimes need to store these cookies. We will also share how you can prevent these cookies from being stored however this may downgrade or 'break' certain elements of the sites functionality.</p>
+        <p>As is common practice with almost all professional websites this site uses cookies, which are tiny files that are downloaded to your computer, to improve your experience. This page describes what information they gather, how we use it and why we sometimes need to store these cookies. We will also share how you can prevent these cookies from being stored however this may downgrade or {" 'break' "} certain elements of the sites functionality.</p>
       </div>
 
 
@@ -56,7 +60,7 @@ const Page_three = () => {
       <div className={styles.containers}>
         <h3>More Information</h3>
 
-        <p>Hopefully that has clarified things for you and as was previously mentioned if there is something that you aren't sure whether you need or not it's usually safer to leave cookies enabled in case it does interact with one of the features you use on our site.</p>
+        <p>Hopefully that has clarified things for you and as was previously mentioned if there is something that you {"aren't"} sure whether you need or not {"it's"} usually safer to leave cookies enabled in case it does interact with one of the features you use on our site.</p>
 
         <p>For more general information on cookies, please read <a href="https://www.cookiepolicygenerator.com/sample-cookies-policy/">the Cookies Policy article</a>.</p>
 
