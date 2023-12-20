@@ -1,17 +1,14 @@
 import { useState } from 'react';
-import axios from "axios"
 import { Link } from 'react-router-dom';
 import styles from "./addcart.module.css"
 import currencyFormatter from 'currency-formatter';
 import { AiOutlineDelete, AiOutlinePlus, AiOutlineMinus, AiOutlineShoppingCart } from "react-icons/ai"
-import { Button, Modal } from 'antd';
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux";
 import { addToCart, removeItem } from "../../redux/cartReducer"
 import img from "../../assets/ecartbg.png"
 import { useAppContext } from "../../context/Context"
-import logo from "../../assets/colorlogo.webp"
-import { toast } from 'react-hot-toast'
+
 import emptyCart from "../../assets/undraw_empty_cart_co35.svg"
 
 
@@ -71,40 +68,6 @@ const AddCart = () => {
         }
     };
 
-
-    const handleDownload = async (price) => {
-        try {
-            const { data: { key } } = await axios.get("http://localhost:1337/api/orders/get_key");
-            const { data: { order } } = await axios.post(' http://localhost:1337/api/orders/checkout', { price });
-            const options = {
-                key: key,
-                amount: order.amount,
-                currency: "INR",
-                name: "colorSplash",
-                description: "Test Transaction",
-                image: logo,
-                order_id: order.id,
-                userId: user.id,
-                callback_url: `http://localhost:1337/api/orders/verification`,
-                prefill: {
-                    name: user.name,
-                    email: user.email,
-                },
-                notes: {
-                    "address": "Razorpay Corporate Office"
-                },
-                theme: {
-                    color: "#121212"
-                }
-            };
-            const rzp1 = new window.Razorpay(options);
-            rzp1.open();
-            toast.success("successfully .....");
-        } catch (error) {
-            // toast.error(error);
-            console.log(error);
-        }
-    };
 
     if (products.length === 0) {
         return (

@@ -733,13 +733,11 @@ export interface ApiOrderOrder extends Schema.CollectionType {
   attributes: {
     name: Attribute.String;
     email: Attribute.Email;
-    orderId: Attribute.UID;
-    delevered: Attribute.Boolean & Attribute.DefaultTo<false>;
-    products: Attribute.JSON;
     razorpay_payment_id: Attribute.String;
     razorpay_order_id: Attribute.String;
     razorpay_signature: Attribute.String;
-    address: Attribute.Text;
+    user_Id: Attribute.BigInteger;
+    product_id: Attribute.BigInteger;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -792,6 +790,8 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'manyToMany',
       'api::category.category'
     >;
+    default_color: Attribute.String;
+    default_size: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -894,6 +894,42 @@ export interface ApiUserAddressUserAddress extends Schema.CollectionType {
   };
 }
 
+export interface ApiUsersOrderUsersOrder extends Schema.CollectionType {
+  collectionName: 'users_orders';
+  info: {
+    singularName: 'users-order';
+    pluralName: 'users-orders';
+    displayName: 'users_order';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    payment_method: Attribute.String;
+    user_address: Attribute.Text;
+    delivered: Attribute.Boolean & Attribute.DefaultTo<false>;
+    order_canceled: Attribute.Boolean & Attribute.DefaultTo<false>;
+    user_Id: Attribute.BigInteger;
+    products_data: Attribute.JSON;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::users-order.users-order',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::users-order.users-order',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -915,6 +951,7 @@ declare module '@strapi/types' {
       'api::product.product': ApiProductProduct;
       'api::sub-category.sub-category': ApiSubCategorySubCategory;
       'api::user-address.user-address': ApiUserAddressUserAddress;
+      'api::users-order.users-order': ApiUsersOrderUsersOrder;
     }
   }
 }

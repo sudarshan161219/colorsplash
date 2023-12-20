@@ -2,7 +2,7 @@ const sendPaymentConfirmationEmail = async (ctx, recipientEmail) => {
     try {
       await strapi.plugins['email'].services.email.send({
         to: recipientEmail,
-        from: 'godhustler90956@gmail.com',
+        from: 'colorsplash1005@gmail.com',
         subject: 'Payment Confirmation',
         text: 'Thank you for your payment. Your payment was successful.',
       });

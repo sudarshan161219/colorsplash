@@ -98,7 +98,7 @@ const MyInfo = ({ user }) => {
             }
         };
         addAddress(payload)
-        update_Address(payload)
+
         setSaveCount((prevCount) => prevCount + 1);
         setToggle(false)
     };

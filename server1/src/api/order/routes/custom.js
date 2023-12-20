@@ -3,17 +3,17 @@ module.exports = {
     {
       method: "POST",
       path: "/orders/checkout",
-      handler: "custom-controller.controlleraction",
+      handler: "custom.controlleraction",
     },
     {
       method: "POST",
       path: "/orders/verification",
-      handler: "custom-controller.paymentverification",
+      handler: "custom.paymentverification",
     },
     {
       method: "GET",
       path: "/orders/get_key",
-      handler: "custom-controller.getkeys",
+      handler: "custom.getkeys",
     },
   ],
 };

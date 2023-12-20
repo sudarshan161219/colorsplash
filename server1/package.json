@@ -9,9 +9,6 @@
     "build": "strapi build",
     "strapi": "strapi"
   },
-
-  
-
   "dependencies": {
     "@strapi/plugin-cloud": "4.15.4",
     "@strapi/plugin-i18n": "^4.7.1",

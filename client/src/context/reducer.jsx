@@ -21,7 +21,10 @@ import {
     PAGE_NUM,
     GET_USER_ADDRESS_BEGIN,
     GET_USER_ADDRESS_SUCCESS,
-    GET_USER_ADDRESS_ERROR
+    GET_USER_ADDRESS_ERROR,
+    GET_USER_ORDER_BEGIN,
+    GET_USER_ORDER_SUCCESS,
+    GET_USER_ORDER_ERROR
 } from "./action"
 
 
@@ -149,6 +152,32 @@ const reducer = (state, action) => {
             isLoading: false,
         };
     }
+
+
+    if (action.type === GET_USER_ORDER_BEGIN) {
+        return {
+            ...state,
+            isLoading: true
+        }
+    }
+
+    if (action.type === GET_USER_ORDER_SUCCESS) {
+
+        return {
+            ...state,
+            isLoading: false,
+            userOrder: action.payload.resData
+        }
+    }
+
+
+    if (action.type === GET_USER_ORDER_ERROR) {
+        return {
+            ...state,
+            isLoading: false,
+        };
+    }
+
 
 
     if (action.type === SUB_CATEGORIES) {

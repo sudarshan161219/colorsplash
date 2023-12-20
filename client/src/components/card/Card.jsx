@@ -15,7 +15,7 @@ const Card = ({ item }) => {
             <div className={styles.infoContainer} >
                 <span className={styles.name}>{item?.attributes.title.lenght >= 10 ? item?.attributes.title.slice(0, 15) : item?.attributes.title}</span>
                 <span className={styles.subcat}>{subCat}</span>
-                <span className={styles.span}>₹ {item?.attributes.price} /-</span>
+                <span className={ `tracking-wider text-gray-900`}>₹ {item?.attributes.price} /-</span>
             </div>
         </div>
     )

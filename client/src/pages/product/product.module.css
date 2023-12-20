@@ -211,6 +211,10 @@
   gap: 25px;
 }
 
+.Icons{
+  font-size: 1.4rem;
+}
+
 @media screen and (min-width: 768px) {
   .infoContainer {
     padding: 3rem;

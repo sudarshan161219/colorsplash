@@ -1,7 +1,10 @@
+import axios from "axios"
 import styles from "./checkout.module.css"
 import { useState, useEffect } from "react";
 import currencyFormatter from 'currency-formatter';
 import { useSelector } from "react-redux"
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import {
   Radio,
   Select,
@@ -9,21 +12,27 @@ import {
 } from 'antd';
 import { data } from "../../data/data"
 import { useAppContext } from "../../context/Context"
+import { useDispatch } from "react-redux";
+import { resetCart } from "../../redux/cartReducer"
+import logo from "../../assets/colorlogo.webp"
+
 
 const Checkout = () => {
   const products = useSelector(state => state.cart.products)
-  const { user, getAddresses, userAddress } = useAppContext()
-  const [componentSize, setComponentSize] = useState('default');
+  const { user, getAddresses, userAddress, addAddress } = useAppContext()
   const [selectedState, setSelectedState] = useState('')
   const [value, setValue] = useState(1);
-  const [value1, setValue1] = useState(1);
+  const [value1, setValue1] = useState(null);
   const imgUrl = import.meta.env.VITE_APP_UPLOAD_URL
-
+  const [saveCount, setSaveCount] = useState(0);
+  const [address, setAddress] = useState([])
+  const navigate = useNavigate();
+  const dispatch = useDispatch()
 
 
   useEffect(() => {
     getAddresses(user?.id)
-  }, [user?.id]);
+  }, [user?.id, saveCount]);
 
   const totalPrice = products.reduce((accumulator, currentItem) => {
     const itemTotal = currentItem.price * currentItem.quantity;
@@ -48,24 +57,191 @@ const Checkout = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
-    data.state = selectedState
-    // console.log(data);
+    data.State = selectedState
+
+    const {
+      firstname, lastname, Street_Address, Town_City, State, Country_Region, Phone, Postal_Code } = data
+    const town_city_postal_code = Town_City + "-" + Postal_Code
+    const customer_address = firstname + " " + lastname + ", " + Street_Address + ", " + town_city_postal_code + ", " + State + ", " + Country_Region + " , " + Phone
+    const useridnum = user.id
+    const customer_email = user?.email
+
+    if (!firstname || !lastname || !Street_Address || !Town_City || !State || !Country_Region || !Phone || !Postal_Code) {
+      toast.error("please fill all fields!");
+      return
+    }
+
+    let payload = {
+      "data": {
+        "customer_Id": useridnum,
+        "firstname": firstname,
+        "lastname": lastname,
+        "customer_name": firstname + " " + lastname,
+        "Street_Address": Street_Address,
+        "Town_City": Town_City,
+        "State": State,
+        "Country_Region": Country_Region,
+        "Phone": Phone,
+        "Postal_Code": Postal_Code,
+        "customer_email": customer_email,
+        "customer_address": customer_address
+      }
+    };
+
+    addAddress(payload)
+    setSaveCount((prevCount) => prevCount + 1);
+
+
   }
+
+
+  const handleStateChange = (value) => {
+    setSelectedState(value)
+  };
 
   const onChange = (e) => {
     setValue(e.target.value);
   };
 
-  const onChangeAddress = (e) => {
-    setValue1(e.target.value1);
 
+
+  const onChangeAddress = (e) => {
+    setValue1(e.target.value);
+    const filteredAddress = userAddress.filter((number) => number.id === e.target.value);
+    setAddress(filteredAddress)
   }
 
-  const handleChange = (value) => {
-    setSelectedState(value)
+  const user_Address = address.map(item => item.attributes.customer_address)
+
+
+
+  const handlePurchaseSuccess = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const userId = user?.email; 
+      const confirmPurchase = await axios.post('http://localhost:1337/api/confirm/email', {
+       userId 
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          // Add any necessary authentication headers
+        },
+      });
+  
+      if (confirmPurchase.status === 200) {
+        const sendEmail = await axios.post('http://localhost:1337/api/confirm/email', {
+            userId 
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            // Add any necessary authentication headers
+          },
+        });
+  
+        if (sendEmail.status === 200) {
+          console.log('Success email sent to the user!');
+        } else {
+          console.error('Failed to send success email');
+        }
+      } else {
+        console.error('Purchase confirmation failed');
+      }
+    } catch (error) {
+      console.error('Error occurred:', error);
+    }
   };
+  
 
+  const handlePlaceOrder = async () => {
+    if (value1 === null) {
+      toast.error("Please choose an address or add a new address.");
+      return;
+    }
+  
+    const productData = products.map((item) => {
+      const { id, name, color, size, price, quantity } = item;
+      return {
+        "product_id": id,
+        "product_name": name,
+        "size": size,
+        "quantity": quantity,
+        "price": price,
+        "color": color,
+      };
+    });
+  
+    const orderInfo = {
+      "data": {
+        "payment_method": 'COD',
+        "user_address": user_Address[0],
+        "delivered": false,
+        "order_canceled": false,
+        "user_Id": user?.id,
+        "products_data": productData,
+      }
+    };
+  
+    try {
+      const token = localStorage.getItem('token');
+  
+      const response = await axios.post('http://localhost:1337/api/users-orders', orderInfo, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+  
+      if (response.status === 200) {
+        toast.success(`Your order has been placed successfully!`);
+        handlePurchaseSuccess();
+        dispatch(resetCart({}));
+        navigate("/success-page");
+      } else {
+        toast.error("Failed to place the order. Please try again.");
+      }
+    } catch (error) {
+      console.error('Error placing order:', error.message || error);
+      toast.error("Something went wrong, please try again later.");
+    }
+  };
+  
+  
 
+  const handlePayment = async (price) => {
+    try {
+      const { data: { key } } = await axios.get("http://localhost:1337/api/orders/get_key");
+      const { data: { order } } = await axios.post('http://localhost:1337/api/orders/checkout', { price });
+      const options = {
+        key: key,
+        amount: order.amount,
+        currency: "INR",
+        name: "colorSplash",
+        description: "Test Transaction",
+        image: logo,
+        order_id: order.id,
+        userId: user.id,
+        callback_url: "http://localhost:1337/api/orders/verification",
+        prefill: {
+          name: user.name,
+          email: user.email,
+        },
+        notes: {
+          "address": "Razorpay Corporate Office"
+        },
+        theme: {
+          color: "#121212"
+        }
+      };
+      const rzp1 = new window.Razorpay(options);
+      rzp1.open();
+      toast.success("payment success .....");
+    } catch (error) {
+      console.log(error);
+      toast.error(error);
+    }
+  };
 
   return (
     <div className="p-3">
@@ -117,25 +293,21 @@ const Checkout = () => {
               <input
                 type="text"
                 id="CountryRegion"
-                name="CountryRegion"
+                name="Country_Region"
                 placeholder="Country / Region"
                 className={styles.input}
                 required
               />
             </div>
-
             <div className="grid gap-3">
-              <label htmlFor="CompanyName" className={styles.label}>
-                Company Name
+              <label htmlFor="State" className={styles.label}>
+                State
               </label>
-
-              <input
-                type="text"
-                id="CompanyName"
-                name="CompanyName"
-                placeholder="Company (optional)"
-                className={styles.input}
-              />
+              <Select onChange={handleStateChange} placeholder='State' >
+                {data.map((item, idx) => (
+                  <Select.Option key={idx} value={item.value}>{item.name}</Select.Option>
+                ))}
+              </Select>
             </div>
           </div>
 
@@ -149,32 +321,13 @@ const Checkout = () => {
               <input
                 type="text"
                 id="StreetAddress"
-                name="StreetAddress"
+                name="Street_Address"
                 placeholder="House number and street name"
                 className={styles.input}
                 required
               />
             </div>
 
-            <div className="grid gap-3">
-              <label htmlFor="Aptsuiteunit" className={styles.label}>
-                Apt, suite, unit
-              </label>
-
-              <input
-                type="text"
-                id="Aptsuiteunit"
-                name="Aptsuiteunit"
-                placeholder="apartment, suite, unit, etc. (optional)"
-                className={styles.input}
-
-              />
-            </div>
-          </div>
-
-
-
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
             <div className="grid gap-3">
               <label htmlFor="City" className={styles.label}>
                 City
@@ -183,26 +336,15 @@ const Checkout = () => {
               <input
                 type="text"
                 id="City"
-                name="town_city"
+                name="Town_City"
                 placeholder="Town / City"
                 className={styles.input}
                 required
               />
             </div>
-
-            <div className="grid gap-3">
-              <label htmlFor="State" className={styles.label}>
-                State
-              </label>
-
-              <Select onChange={handleChange} placeholder='State' >
-                {data.map((item, idx) => (
-                  <Select.Option key={idx} value={item.value}>{item.name}</Select.Option>
-                ))}
-              </Select>
-            </div>
-
           </div>
+
+
 
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
@@ -214,8 +356,9 @@ const Checkout = () => {
               <input
                 type="number"
                 id="PhoneNumber"
-                name="phone"
+                name="Phone"
                 placeholder="Phone"
+                maxLength="10"
                 className={styles.input}
                 required
               />
@@ -229,8 +372,9 @@ const Checkout = () => {
               <input
                 type="number"
                 id="PostalCode"
-                name="postalCode"
+                name="Postal_Code"
                 placeholder="Postal Code"
+                maxLength="6"
                 className={styles.input}
                 required
               />
@@ -337,20 +481,17 @@ const Checkout = () => {
 
             <Radio.Group onChange={onChangeAddress} value={value1}>
               <Space className="grid gap-4" direction="vertical">
-                {userAddress.map((item) => (
-                  <Radio key={item?.id} className="flex " value={1}>
+                {userAddress.map((item, idx) => (
+                  <Radio key={item?.id} className="flex " value={item?.id}>
                     <h3 className="font-medium text-lg  text-black">{item.attributes.customer_name}</h3>
                     <p className="text-gray-800" >{item.attributes.customer_address}</p>
                   </Radio>
                 ))}
               </Space>
             </Radio.Group>
+
           </div>
-          {/* <div className="flex justify-end" >
 
-          {value === 1 ? <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Pay Now</button> : <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Place Order</button>}
-
-        </div> */}
         </div>}
 
 
@@ -363,10 +504,10 @@ const Checkout = () => {
 
           <Radio.Group onChange={onChange} value={value}>
             <Space className="grid gap-4" direction="vertical">
-              <Radio className="flex " value={1}>
+              {/* <Radio value={1}>
                 <h3 className="font-medium text-lg  text-black">Razor Pay</h3>
                 <p className="text-gray-800" >Make payments via UPI, card, net banking, and more</p>
-              </Radio>
+              </Radio> */}
               <Radio value={2}>
                 <h3 className="font-medium text-lg  text-black">Cash on delivery</h3>
                 <p className="text-gray-800">Pay with cash upon delivery.</p>
@@ -378,7 +519,12 @@ const Checkout = () => {
 
         <div className="flex justify-end" >
 
-          {value === 1 ? <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Pay Now</button> : <button className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Place Order</button>}
+          {
+            value === 1 ?
+              <button onClick={() => handlePayment(grandTotal)} className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Pay Now</button>
+              :
+              <button onClick={handlePlaceOrder} className="mt-3 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white rounded-xl" >Place Order</button>
+          }
 
         </div>
 

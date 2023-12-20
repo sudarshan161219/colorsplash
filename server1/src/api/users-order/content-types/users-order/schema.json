@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "users_orders",
+  "info": {
+    "singularName": "users-order",
+    "pluralName": "users-orders",
+    "displayName": "users_order",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "payment_method": {
+      "type": "string"
+    },
+    "user_address": {
+      "type": "text"
+    },
+    "delivered": {
+      "type": "boolean",
+      "default": false
+    },
+    "order_canceled": {
+      "type": "boolean",
+      "default": false
+    },
+    "user_Id": {
+      "type": "biginteger"
+    },
+    "products_data": {
+      "type": "json"
+    }
+  }
+}

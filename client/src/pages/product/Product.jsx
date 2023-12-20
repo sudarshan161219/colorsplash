@@ -1,20 +1,18 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Carousel } from 'antd';
 import { Link, useParams } from 'react-router-dom';
-// import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styles from "./product.module.css"
 import { Radio } from 'antd';
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineShoppingCart } from "react-icons/ai"
+import { IoIosArrowRoundForward } from "react-icons/io";
 import { IoIosHeartEmpty, IoMdHeart } from "react-icons/io";
 import currencyFormatter from 'currency-formatter';
 import useFetch from "../../hooks/useFetch"
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartReducer"
 import { addToWishlist } from "../../redux/wishlistReducer"
-// import { removeWishlist } from "../../redux/wishlistReducer"
-// import { useAppContext } from "../../context/Context";
 import { SimilarProductsCard } from "../../components/export";
 import { PageLoading } from "../../components/export"
 import { useSelector } from "react-redux"
@@ -33,7 +31,7 @@ const Product = () => {
   const products = useSelector(state => state.cart.products)
   const [wishlistedProduct, setWishlistedProduct] = useState([])
   const [cartProduct, setCartProduct] = useState([])
-;
+    ;
   const dispatch = useDispatch()
 
   const imgUrl = import.meta.env.VITE_APP_UPLOAD_URL
@@ -61,43 +59,19 @@ const Product = () => {
     },
   ]
 
-  const colorradioBtn = [
-    {
-      name: "Black",
-      value: "Black",
-      color: '#000'
-    },
-    {
-      name: "Yellow",
-      value: "Yellow",
-      color: '#FFC300'
-    },
-    {
-      name: "Pink",
-      value: "Pink",
-      color: '#F774FF'
-    },
-    {
-      name: "Red",
-      value: "Red",
-      color: '#C70039'
-    },
-  ]
-
   const addtocart = () => {
     dispatch(addToCart({
       id: data?.id,
       name: data?.attributes?.title,
       img: data?.attributes?.img.data[0]?.attributes.formats.small.url,
-      color: color,
-      size: size,
+      color: color === 'normal' ? data?.attributes?.default_color : color,
+      size: size === 'normal' ?  data?.attributes?.default_size: size,
       stock: data?.attributes?.stock,
       shipping: data?.attributes?.shipping,
       price: data?.attributes?.price,
       quantity: quantity
     }))
   }
-
 
   const addWishlist = () => {
     dispatch(addToWishlist({
@@ -112,7 +86,6 @@ const Product = () => {
       quantity: quantity
     }))
   }
-
 
   const handleIncrement = () => {
     setQuantity(quantity + 1)
@@ -181,9 +154,8 @@ const Product = () => {
                   </Radio.Group>
                 </div>
 
-                  : <div>
-                    <h1>No Size
-                      available</h1>
+                  : <div className="flex items-center gap-2">
+                    <span className="text-lg capitalize">size:</span>  <span className="text-lg capitalize">{data?.attributes?.default_size}</span>
                   </div>
               }
 
@@ -194,12 +166,14 @@ const Product = () => {
                   <div className={styles.radioContainer}>
                     <strong className={styles.strong}>Colours Available </strong>
                     <Radio.Group buttonStyle="solid" className={styles.radioGroup} onChange={(e) => setColor(e.target.value)} defaultValue={color}>
-                      {colorradioBtn.map((item, idx) => (
-                        <Radio.Button style={idx === item ? { backgroundColor: '#000' } : { backgroundColor: `${item.color}` }} className={styles.radioBtn} key={idx} value={item.value}>{item.name}</Radio.Button>
+                      {data?.attributes?.color.map((item, idx) => (
+                        <Radio.Button className={styles.radioBtn} key={idx} value={item.value}>{item.name}</Radio.Button>
                       ))}
                     </Radio.Group>
                   </div>
-                  : <div><h1>no Color options availabel</h1></div>
+                  : <div className="flex items-center gap-2">
+                    <span className="text-lg capitalize">colour:</span>  <span className="text-lg capitalize">{data?.attributes?.default_color}</span>
+                  </div>
               }
             </div>
 
@@ -225,19 +199,17 @@ const Product = () => {
 
             {
               cartProduct.id === data.id ?
-                <Link to="/addtocart" className={`${styles.btn} ${styles.addToCartBtn}`}>
-                  <AiOutlineShoppingCart /> Go to cart</Link>
+                <Link to="/addtocart" className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900  gap-3  flex-1 text-center flex  items-center justify-center">Go to cart <IoIosArrowRoundForward className={styles.Icons} /></Link>
                 :
-                <button onClick={addtocart} className={`${styles.btn} ${styles.addToCartBtn}`}>
-                  <AiOutlineShoppingCart /> Add to cart</button>
+                <button onClick={addtocart} type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 flex-1 gap-3  text-center flex justify-center">Add to cart <AiOutlineShoppingCart className={styles.Icons} /></button>
             }
 
             {wishlistedProduct.id === data.id ?
-              <Link to="/my_account" className={`${styles.btn} ${styles.addToCartBtn}`}>
-              <IoMdHeart /> Go to Wishlist</Link>
+              <Link to="/my_account" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-3.5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 flex-2">
+                <IoMdHeart className={styles.Icons} /> </Link>
               :
-              <button onClick={addWishlist} className={`${styles.btn} ${styles.addToCartBtn}`}>
-              <IoIosHeartEmpty /> Add to Wishlist</button>
+              <button onClick={addWishlist} type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-3.5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 flex-2">   <IoIosHeartEmpty className={styles.Icons} /></button>
+
             }
 
           </div>

@@ -18,16 +18,6 @@
     "email": {
       "type": "email"
     },
-    "orderId": {
-      "type": "uid"
-    },
-    "delevered": {
-      "type": "boolean",
-      "default": false
-    },
-    "products": {
-      "type": "json"
-    },
     "razorpay_payment_id": {
       "type": "string"
     },
@@ -37,8 +27,11 @@
     "razorpay_signature": {
       "type": "string"
     },
-    "address": {
-      "type": "text"
+    "user_Id": {
+      "type": "biginteger"
+    },
+    "product_id": {
+      "type": "biginteger"
     }
   }
 }

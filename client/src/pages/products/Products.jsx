@@ -1,4 +1,3 @@
-// import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from "./products.module.css"
 import { BiFilter } from "react-icons/bi"
@@ -50,7 +49,6 @@ const Products = () => {
   }
 
 
-
   return (
     <div className='p-4  grid gap-10 relative '>
       <div className='flex items-center justify-between'>
@@ -59,7 +57,6 @@ const Products = () => {
       </div>
       <Filters id={numID} />
       <div className={styles.lists}>
-        {/* <List catId={numID} sort={sort} maxPrice={inputValue} subCat={selectedSubCat}  /> */}
         <List catId={numID} />
       </div>
       <div className='mt-4 mb-4 flex items-center justify-center' >

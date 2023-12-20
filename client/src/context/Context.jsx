@@ -23,7 +23,10 @@ import {
     TOGGLE_AUTH_MODAL,
     GET_USER_ADDRESS_BEGIN,
     GET_USER_ADDRESS_SUCCESS,
-    GET_USER_ADDRESS_ERROR
+    GET_USER_ADDRESS_ERROR,
+    GET_USER_ORDER_BEGIN,
+    GET_USER_ORDER_SUCCESS,
+    GET_USER_ORDER_ERROR
 } from "./action"
 
 
@@ -41,6 +44,7 @@ const initialState = {
     user: null,
     sub_category: [],
     userAddress: [],
+    userOrder: [],
     sortprice: 'asc',
     filterprice: 0,
     pagenum: 1.
@@ -182,6 +186,29 @@ const ContextProvider = ({ children }) => {
 
     };
 
+
+    const placeOrder = async (orderInfo) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.post(`http://localhost:1337/api/users-orders`, orderInfo, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (response.status === 200) {
+                toast.success("Your order has been placed!");
+            } else {
+                toast.error("Something went wrong, please try again later.,");
+            }
+        } catch (error) {
+            console.error('Error updating user:', error.message || error);
+        }
+
+    };
+
+
+
     const getAddresses = async (user_id) => {
         const token = localStorage.getItem('token');
         dispatch({ type: GET_USER_ADDRESS_BEGIN })
@@ -201,6 +228,29 @@ const ContextProvider = ({ children }) => {
 
         }
     }
+
+
+
+    const getOrders = async (user_id) => {
+        const token = localStorage.getItem('token');
+        dispatch({ type:  GET_USER_ORDER_BEGIN })
+        try {
+            const { data } = await axios.get(`http://localhost:1337/api/users-orders?filters[user_Id][$eq]=${user_id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+            const resData = data.data
+
+            
+            dispatch({ type: GET_USER_ORDER_SUCCESS, payload: { resData } })
+        } catch (error) {
+            dispatch({ type: GET_USER_ORDER_ERROR })
+            toast.error("Something went wrong, please try again later.,");
+
+        }
+    }
+
 
 
     const update_preference_default_Address = async (Address, id) => {
@@ -324,6 +374,7 @@ const ContextProvider = ({ children }) => {
             handle_page_num,
             toggle_Auth_Modal,
             getAddresses,
+            getOrders,
             update_preference_default_Address,
             delete_Address,
             update_Address

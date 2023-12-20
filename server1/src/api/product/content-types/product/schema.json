@@ -71,6 +71,12 @@
       "relation": "manyToMany",
       "target": "api::category.category",
       "inversedBy": "products"
+    },
+    "default_color": {
+      "type": "string"
+    },
+    "default_size": {
+      "type": "string"
     }
   }
 }
