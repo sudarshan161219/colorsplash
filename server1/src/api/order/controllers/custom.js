@@ -1,5 +1,5 @@
 const { createCoreController } = require("@strapi/strapi").factories;
-const { instance } = require("../../../../utils/paymentInstance");
+// const { instance } = require("../../../../utils/paymentInstance");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 
