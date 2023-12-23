@@ -118,9 +118,9 @@ const Checkout = () => {
   const handlePurchaseSuccess = async () => {
     const token = localStorage.getItem('token');
     try {
-      const userId = user?.email; 
+      const userId = user?.email;
       const confirmPurchase = await axios.post('http://localhost:1337/api/confirm/email', {
-       userId 
+        userId
       }, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -128,10 +128,10 @@ const Checkout = () => {
           // Add any necessary authentication headers
         },
       });
-  
+
       if (confirmPurchase.status === 200) {
         const sendEmail = await axios.post('http://localhost:1337/api/confirm/email', {
-            userId 
+          userId
         }, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -139,7 +139,7 @@ const Checkout = () => {
             // Add any necessary authentication headers
           },
         });
-  
+
         if (sendEmail.status === 200) {
           console.log('Success email sent to the user!');
         } else {
@@ -152,14 +152,14 @@ const Checkout = () => {
       console.error('Error occurred:', error);
     }
   };
-  
+
 
   const handlePlaceOrder = async () => {
     if (value1 === null) {
       toast.error("Please choose an address or add a new address.");
       return;
     }
-  
+
     const productData = products.map((item) => {
       const { id, name, color, size, price, quantity } = item;
       return {
@@ -171,7 +171,7 @@ const Checkout = () => {
         "color": color,
       };
     });
-  
+
     const orderInfo = {
       "data": {
         "payment_method": 'COD',
@@ -182,17 +182,17 @@ const Checkout = () => {
         "products_data": productData,
       }
     };
-  
+
     try {
       const token = localStorage.getItem('token');
-  
+
       const response = await axios.post('http://localhost:1337/api/users-orders', orderInfo, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         }
       });
-  
+
       if (response.status === 200) {
         toast.success(`Your order has been placed successfully!`);
         handlePurchaseSuccess();
@@ -206,8 +206,8 @@ const Checkout = () => {
       toast.error("Something went wrong, please try again later.");
     }
   };
-  
-  
+
+
 
   const handlePayment = async (price) => {
     try {
@@ -234,12 +234,11 @@ const Checkout = () => {
           color: "#121212"
         }
       };
-      const rzp1 = new window.Razorpay(options);
+      const rzp1 = new window.Razorpay( options );
       rzp1.open();
       toast.success("payment success .....");
     } catch (error) {
       console.log(error);
-      toast.error(error);
     }
   };
 
@@ -504,10 +503,10 @@ const Checkout = () => {
 
           <Radio.Group onChange={onChange} value={value}>
             <Space className="grid gap-4" direction="vertical">
-              {/* <Radio value={1}>
+              <Radio value={1}>
                 <h3 className="font-medium text-lg  text-black">Razor Pay</h3>
                 <p className="text-gray-800" >Make payments via UPI, card, net banking, and more</p>
-              </Radio> */}
+              </Radio>
               <Radio value={2}>
                 <h3 className="font-medium text-lg  text-black">Cash on delivery</h3>
                 <p className="text-gray-800">Pay with cash upon delivery.</p>

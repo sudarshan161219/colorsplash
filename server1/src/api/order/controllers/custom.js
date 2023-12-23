@@ -3,8 +3,10 @@ const { instance } = require("../../../../utils/paymentInstance");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 
-module.exports = createCoreController("api::order.order", ({ strapi }) => ({
-  async controlleraction(ctx) {
+module.exports = createCoreController("api::order.order", ({ strapi }) => {
+  const controller = {};
+
+  controller.controlleraction = async (ctx) => {
     try {
       if (!ctx.request.body || typeof ctx.request.body.price !== "number") {
         return ctx.badRequest("Invalid request body");
@@ -23,9 +25,9 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
       strapi.log.error(`Error in create order: ${error}`);
       return ctx.internalServerError("Internal server error");
     }
-  },
+  };
 
-  async paymentverification(ctx) {
+  controller.paymentverification = async (ctx) => {
     try {
       console.log('Request body:', ctx.request.body);
 
@@ -45,7 +47,7 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
       }
 
       const newOrder = await strapi.services.order.create({
-        user: ctx.state.user.id, 
+        user: ctx.state.user.id,
         razorpay_payment_id,
         razorpay_order_id,
         razorpay_signature,
@@ -67,9 +69,9 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
       strapi.log.error(`Error in payment verification: ${error}`);
       return ctx.internalServerError("Internal server error");
     }
-  },
+  };
 
-  async getkeys(ctx) {
+  controller.getkeys = async (ctx) => {
     try {
       return ctx.send({
         key: process.env.RAZOR_KEY_ID,
@@ -78,5 +80,7 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
       strapi.log.error(`Error in get keys: ${error}`);
       return ctx.internalServerError("Internal server error");
     }
-  },
-}));
+  };
+
+  return controller;
+});
