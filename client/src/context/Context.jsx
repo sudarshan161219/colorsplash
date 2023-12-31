@@ -128,7 +128,7 @@ const ContextProvider = ({ children }) => {
             localStorage.setItem('token', jwt);
             toast.success("Login Successfull....!,");
         } catch (error) {
-            toast.error(error.response.data.msg);
+            toast.error("invalid credentials please try again");
             dispatch({
                 type: LOGIN_USER_ERROR,
             });

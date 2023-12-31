@@ -16,7 +16,6 @@ import { useDispatch } from "react-redux";
 import { resetCart } from "../../redux/cartReducer"
 import logo from "../../assets/colorlogo.webp"
 
-
 const Checkout = () => {
   const products = useSelector(state => state.cart.products)
   const { user, getAddresses, userAddress, addAddress } = useAppContext()
@@ -33,6 +32,22 @@ const Checkout = () => {
   useEffect(() => {
     getAddresses(user?.id)
   }, [user?.id, saveCount]);
+
+  let user_id
+  let user_name
+  let user_email
+  let user_phone
+
+  if (user) {
+    const { id, username, email, phoneNumber } = user
+
+    user_id = id
+    user_email = email
+    user_name = username
+    user_phone = phoneNumber
+  }
+
+
 
   const totalPrice = products.reduce((accumulator, currentItem) => {
     const itemTotal = currentItem.price * currentItem.quantity;
@@ -104,7 +119,6 @@ const Checkout = () => {
   };
 
 
-
   const onChangeAddress = (e) => {
     setValue1(e.target.value);
     const filteredAddress = userAddress.filter((number) => number.id === e.target.value);
@@ -112,47 +126,6 @@ const Checkout = () => {
   }
 
   const user_Address = address.map(item => item.attributes.customer_address)
-
-
-
-  const handlePurchaseSuccess = async () => {
-    const token = localStorage.getItem('token');
-    try {
-      const userId = user?.email;
-      const confirmPurchase = await axios.post('http://localhost:1337/api/confirm/email', {
-        userId
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          // Add any necessary authentication headers
-        },
-      });
-
-      if (confirmPurchase.status === 200) {
-        const sendEmail = await axios.post('http://localhost:1337/api/confirm/email', {
-          userId
-        }, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            // Add any necessary authentication headers
-          },
-        });
-
-        if (sendEmail.status === 200) {
-          console.log('Success email sent to the user!');
-        } else {
-          console.error('Failed to send success email');
-        }
-      } else {
-        console.error('Purchase confirmation failed');
-      }
-    } catch (error) {
-      console.error('Error occurred:', error);
-    }
-  };
-
 
   const handlePlaceOrder = async () => {
     if (value1 === null) {
@@ -179,6 +152,9 @@ const Checkout = () => {
         "delivered": false,
         "order_canceled": false,
         "user_Id": user?.id,
+        "user_email": user?.email,
+        "user_name": user?.username,
+        "user_phone": user?.phoneNumber,
         "products_data": productData,
       }
     };
@@ -195,7 +171,6 @@ const Checkout = () => {
 
       if (response.status === 200) {
         toast.success(`Your order has been placed successfully!`);
-        handlePurchaseSuccess();
         dispatch(resetCart({}));
         navigate("/success-page");
       } else {
@@ -209,10 +184,59 @@ const Checkout = () => {
 
 
 
+
   const handlePayment = async (price) => {
+    if (value1 === null) {
+      toast.error("Please choose an address or add a new address.");
+      return;
+    }
+    const token = localStorage.getItem('token');
+
+    const productData = products.map((item) => {
+      const { id, name, color, size, price, quantity } = item;
+      return {
+        "product_id": id,
+        "product_name": name,
+        "size": size,
+        "quantity": quantity,
+        "price": price,
+        "color": color,
+      };
+    });
+
+    const orderOnlineInfo = {
+      "data": {
+        "payment_method": 'online paid',
+        "user_address": user_Address[0],
+        "delivered": false,
+        "order_canceled": false,
+        "user_Id": user?.id,
+        "user_email": user?.email,
+        "user_name": user?.username,
+        "user_phone": user?.phoneNumber,
+        "products_data": productData,
+      }
+    };
+
+    const serializedData = encodeURIComponent(JSON.stringify(orderOnlineInfo));
+
     try {
-      const { data: { key } } = await axios.get("http://localhost:1337/api/orders/get_key");
-      const { data: { order } } = await axios.post('http://localhost:1337/api/orders/checkout', { price });
+      const { data: { key } } = await axios.get("http://localhost:1337/api/user_orders/get_key", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      }
+      );
+      const { data: { order } } = await axios.post('http://localhost:1337/api/user_orders/checkout', {
+        price
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
       const options = {
         key: key,
         amount: order.amount,
@@ -222,7 +246,7 @@ const Checkout = () => {
         image: logo,
         order_id: order.id,
         userId: user.id,
-        callback_url: "http://localhost:1337/api/orders/verification",
+        callback_url: `http://localhost:1337/api/user_orders/verification?data=${serializedData}`,
         prefill: {
           name: user.name,
           email: user.email,
@@ -234,9 +258,8 @@ const Checkout = () => {
           color: "#121212"
         }
       };
-      const rzp1 = new window.Razorpay( options );
+      const rzp1 = new window.Razorpay(options);
       rzp1.open();
-      toast.success("payment success .....");
     } catch (error) {
       console.log(error);
     }

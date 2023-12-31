@@ -31,6 +31,24 @@
     },
     "products_data": {
       "type": "json"
+    },
+    "user_email": {
+      "type": "email"
+    },
+    "user_name": {
+      "type": "string"
+    },
+    "user_phone": {
+      "type": "biginteger"
+    },
+    "razorpay_payment_id": {
+      "type": "string"
+    },
+    "razorpay_order_id": {
+      "type": "string"
+    },
+    "razorpay_signature": {
+      "type": "string"
     }
   }
 }

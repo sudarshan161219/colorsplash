@@ -719,43 +719,6 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
   };
 }
 
-export interface ApiOrderOrder extends Schema.CollectionType {
-  collectionName: 'orders';
-  info: {
-    singularName: 'order';
-    pluralName: 'orders';
-    displayName: 'order';
-    description: '';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    name: Attribute.String;
-    email: Attribute.Email;
-    razorpay_payment_id: Attribute.String;
-    razorpay_order_id: Attribute.String;
-    razorpay_signature: Attribute.String;
-    user_Id: Attribute.BigInteger;
-    product_id: Attribute.BigInteger;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::order.order',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::order.order',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 export interface ApiProductProduct extends Schema.CollectionType {
   collectionName: 'products';
   info: {
@@ -912,6 +875,12 @@ export interface ApiUsersOrderUsersOrder extends Schema.CollectionType {
     order_canceled: Attribute.Boolean & Attribute.DefaultTo<false>;
     user_Id: Attribute.BigInteger;
     products_data: Attribute.JSON;
+    user_email: Attribute.Email;
+    user_name: Attribute.String;
+    user_phone: Attribute.BigInteger;
+    razorpay_payment_id: Attribute.String;
+    razorpay_order_id: Attribute.String;
+    razorpay_signature: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -947,7 +916,6 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::category.category': ApiCategoryCategory;
-      'api::order.order': ApiOrderOrder;
       'api::product.product': ApiProductProduct;
       'api::sub-category.sub-category': ApiSubCategorySubCategory;
       'api::user-address.user-address': ApiUserAddressUserAddress;
