@@ -1,173 +1,153 @@
 import { useState, useEffect } from "react";
-import styles from "./orders.module.css"
-import { useAppContext } from "../../context/Context"
+import styles from "./orders.module.css";
+import { useAppContext } from "../../context/Context";
 import currencyFormatter from 'currency-formatter';
-import { AiOutlineShoppingCart } from "react-icons/ai"
-import { useSelector } from "react-redux"
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-
-
-async function fetchProductDetails(productId) {
-  try {
-    const response = await fetch(`http://localhost:1337/api/products/${productId}?populate=*`);
-    const productData = await response.json();
-    return productData.data;
-  } catch (error) {
-    console.error('Error fetching product details:', error);
-    return null;
-  }
-}
-
-
+import axios from "axios";
 
 const Orders = () => {
-  const { isLoading, getOrders, user, userOrder } = useAppContext()
-  const [orderWithImages, setOrderWithImages] = useState([]);
-  const [productArr, setProductArr] = useState()
+  const { isLoading, getOrders, user, userOrder } = useAppContext();
+  const [productsData, setProductsData] = useState([]);
+  const [productsDetails, setProductsDetails] = useState([]);
   const imgUrl = import.meta.env.VITE_APP_UPLOAD_URL
 
 
-  const mergedArray = userOrder.flatMap(item => item.attributes.products_data || []);
-
-
-  const isDeliverd = userOrder.map(item => item.attributes.delivered)
-  const paymentMethod = userOrder.map(item => item.attributes.payment_method)
-
 
   useEffect(() => {
-    async function fetchProductImages() {
-      const updatedOrder = await Promise.all(
-        mergedArray.map(async (item) => {
-          const productDetails = await fetchProductDetails(item.product_id);
-          return {
-            ...item,
-            images: productDetails && productDetails.attributes.img.data,
-            productId: productDetails && productDetails.id,
-            delivery: isDeliverd,
-            payment: paymentMethod,
-            productCreatedAt: productDetails && productDetails.attributes.createdAt
-          };
-        })
-      );
-
-      const mergedOrder = mergedArray.map((item, index) => ({
-        ...item,
-        ...updatedOrder[index],
-        images: updatedOrder[index]?.images || item.images
-      }));
-
-      setOrderWithImages(mergedOrder);
-    }
-
-    fetchProductImages();
+    getOrders(user?.id);
   }, []);
 
+  useEffect(() => {
+    const extractedProductData = userOrder.map(order => order.attributes.products_data).flat();
+    setProductsData(extractedProductData);
+  }, [userOrder]);
 
   useEffect(() => {
-    getOrders(user?.id)
-  }, [])
+    const fetchProductDetails = async () => {
+      try {
+        const productIds = productsData.map(product => product.product_id);
+        const requests = productIds.map(productId =>
+          axios.get(`http://localhost:1337/api/products/${productId}?populate=*`)
+        );
+        const responses = await Promise.all(requests);
+        const updatedProductDetails = responses.map(response => response.data);
+        setProductsDetails(updatedProductDetails);
+      } catch (error) {
+        console.error('Error fetching product details:', error);
+      }
+    };
+
+    if (productsData.length > 0) {
+      fetchProductDetails();
+    }
+  }, [productsData]);
+
+
+
+
+
+  const userOrderMap = {};
+  userOrder.forEach(order => {
+    order.attributes.products_data.forEach(product => {
+      if (!userOrderMap[product.product_id]) {
+        userOrderMap[product.product_id] = [];
+      }
+      userOrderMap[product.product_id].push(order);
+    });
+  });
+  
+  // Merge userOrder data into productsDetails
+  const productsWithOrderInfo = productsDetails.map(product => {
+    const orderInfo = userOrderMap[product.data.id];
+    return {
+      ...product,
+      orderInfo // Add the order information to the product details
+    };
+  });
+  console.log(productsWithOrderInfo);
+  // console.log(productsDetails);
+  // console.log(userOrder)
+
+;
 
 
   if (isLoading) {
-    return <h1>Loading.....!</h1>
+    return <h1>Loading.....!</h1>;
   }
+
+
 
   return (
     <div className={styles.container}>
-      <h1 className={`flex items-center gap-3  font-medium text-2xl ${styles.heading}`}>Your  Orders ({mergedArray.length}) </h1>
+      <h1 className={`flex items-center gap-3  font-medium text-2xl ${styles.heading}`}>
+        Your Orders ({productsDetails.length})
+      </h1>
       <div className={styles.mtable}>
         <section>
-          <div className="mx-auto max-w-screen-xl  py-8 sm:px-6 sm:py-12 lg:px-8">
+          <div className="mx-auto max-w-screen-xl py-8 sm:px-6 sm:py-12 lg:px-8">
             <div className="mx-auto max-w-3xl">
-              <div className="mt-8">
-                <ul className="space-y-4">
-                  {orderWithImages.map((item) => {
-                    const img = item.images[0]
-                    const isoDate = item.productCreatedAt;
-                    const date = new Date(isoDate);
-                    const day = date.getDate().toString().padStart(2, '0');
-                    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                    const year = date.getFullYear();
+              <div className="mt-8 space-y-4">
+                {productsWithOrderInfo.map((product, idx) => (
+                  <div
+                    key={idx}
+                    className="relative block overflow-hidden rounded-lg border border-gray-100 p-4 sm:p-6 lg:p-8"
+                  >
+                    <span
+                      className="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-green-300 via-blue-500 to-purple-600"
+                    ></span>
 
-                    const formattedDate = `${day}/${month}/${year}`;
-                    const orderstatus = item.delivery[0]
-
-
-                    return (
-                      <li key={item.id} className="grid gap-2 mb-2 bg-gray-200 p-2" >
-                        <div className="flex items-center gap-4">
-                          <img
-                            src={imgUrl + img.attributes.formats.small.url}
-                            alt=""
-                            className="h-20 w-20 rounded object-cover"
-                          />
-                          <div>
-                            <h3 className="text-base text-gray-900">{item.product_name}</h3>
-
-                            <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
-                              <div>
-                                <dt className="inline text-xs font-semibold">Size:</dt>
-                                <dd className="inline text-sm font-semibold">{item.size}</dd>
-                              </div>
-
-                              <div>
-                                <dt className="inline text-xs font-semibold">Color:</dt>
-                                <dd className="inline text-xs font-semibold">{item.color}</dd>
-                              </div>
-                            </dl>
-                          </div>
-                        </div>
-
-                        <div className=" grid gap-2 ">
-                          <strong className="text-lg font-semibold">Order No: {item.productId}</strong>
+                    <div className="sm:flex sm:justify-between sm:gap-4">
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
+                          {product.data.attributes.title}
+                        </h3>
+                      </div>
+                      <div className="hidden sm:block sm:shrink-0">
+                        <img
+                          src={imgUrl + product?.data?.attributes?.img?.data[0]?.attributes?.formats?.small?.url}
+                          className="h-16 w-16 rounded-lg object-cover shadow-sm"
+                          alt={product?.attributes?.img?.data[0].name}
+                        />
+                      </div>
+                    </div>
 
 
-                          <div className="flex items-center justify-between">
 
-                            <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
-                              <div>
-                                <dt className="inline text-sm font-semibold">Order date:</dt>
-                                <dd className="inline text-sm ">&nbsp; {formattedDate}</dd>
-                              </div>
+                    <dl className="mt-6 flex gap-4 sm:gap-6">
+                      <div className="flex flex-col">
+                        <dt className="text-sm font-medium text-gray-600">Order Date</dt>
+                        <dd className="text-xs text-gray-500">{product.orderInfo[0].attributes.createdAt}</dd>
+                      </div>
 
-                              <div>
-                                <dt className="inline text-sm font-semibold">Estimated Delivery Date:</dt>
-                                {/* <dd className="inline text-sm ">&nbsp; {item.attributes.color}</dd> */}
-                              </div>
-                            </dl>
+                      <div className="flex flex-col">
+                        <dt className="text-sm font-medium text-gray-600">Estimated Delivery Date</dt>
+                        <dd className="text-xs text-gray-500">3 minute</dd>
+                      </div>
 
+                      <div className="flex flex-col">
+                        <dt className="text-sm font-medium text-gray-600">Payment Method</dt>
+                        <dd className="text-xs text-gray-500">{product.orderInfo[0].attributes.payment_method}</dd>
+                      </div>
 
-                            <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
-                              <div>
-                                <dt className="inline text-sm font-semibold">Order Status:</dt>
-                                <dd className="inline text-sm ">&nbsp;  {!orderstatus ? "Inprogress" : "Shipped"}</dd>
-                              </div>
-
-                              <div>
-                                <dt className="inline text-sm font-semibold">Payment Method:</dt>
-                                <dd className="inline text-sm ">&nbsp; {item.payment[0]}</dd>
-                              </div>
-                            </dl>
-                          </div>
-                        </div>
-
-                      </li>
-                    )
-
-                  })}
-                </ul>
-                <div className="mt-8 flex justify-end border-t border-gray-100 pt-8">
-
-                </div>
+                      <div className="flex flex-col">
+                        <dt className="text-sm font-medium text-gray-600">Order Status</dt>
+                        <dd className="text-xs text-gray-500">{product.orderInfo[0].attributes.delivered ? "Shipped" : "In Progress"} </dd>
+                      </div>
+                    </dl>
+                  </div>
+                ))}
               </div>
+
+
             </div>
           </div>
         </section>
-
       </div>
     </div>
 
-  )
-}
+  );
+};
 
-export default Orders
+export default Orders;
