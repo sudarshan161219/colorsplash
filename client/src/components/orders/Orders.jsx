@@ -45,9 +45,6 @@ const Orders = () => {
   }, [productsData]);
 
 
-
-
-
   const userOrderMap = {};
   userOrder.forEach(order => {
     order.attributes.products_data.forEach(product => {
@@ -58,19 +55,15 @@ const Orders = () => {
     });
   });
   
-  // Merge userOrder data into productsDetails
+
   const productsWithOrderInfo = productsDetails.map(product => {
     const orderInfo = userOrderMap[product.data.id];
     return {
       ...product,
-      orderInfo // Add the order information to the product details
+      orderInfo 
     };
   });
-  console.log(productsWithOrderInfo);
-  // console.log(productsDetails);
-  // console.log(userOrder)
 
-;
 
 
   if (isLoading) {

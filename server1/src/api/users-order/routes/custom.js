@@ -15,5 +15,10 @@ module.exports = {
       path: "/user_orders/get_key",
       handler: "custom.getkeys",
     },
+    {
+      method: "POST",
+      path: "/user_orders/order_confirm",
+      handler: "custom.codEmailConfirmation",
+    },
   ],
 };

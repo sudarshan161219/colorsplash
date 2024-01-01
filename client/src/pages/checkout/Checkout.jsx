@@ -119,6 +119,37 @@ const Checkout = () => {
   };
 
 
+  const handleEmailFn = async (userEmail, orderId) => {
+    try {
+      const token = localStorage.getItem('token');
+
+      const userInfo = {
+        "data": {
+          "user_email": userEmail,
+          "order_id": orderId,
+        }
+      };
+
+      const response = await axios.post('http://localhost:1337/api/user_orders/order_confirm', userInfo, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+      if (response.status === 200) {
+        dispatch(resetCart({}));
+        navigate("/success-page");
+      } else {
+        toast.error("Failed to place the order. Please try again.");
+      }
+
+    } catch (error) {
+      console.error('Error placing order:', error.message || error);
+      toast.error("Something went wrong, please try again later.");
+    }
+  }
+
+
   const onChangeAddress = (e) => {
     setValue1(e.target.value);
     const filteredAddress = userAddress.filter((number) => number.id === e.target.value);
@@ -171,6 +202,9 @@ const Checkout = () => {
 
       if (response.status === 200) {
         toast.success(`Your order has been placed successfully!`);
+        const order_id = response.data.data.id
+        const user_email = user?.email
+        handleEmailFn(user_email, order_id)
         dispatch(resetCart({}));
         navigate("/success-page");
       } else {
@@ -181,8 +215,6 @@ const Checkout = () => {
       toast.error("Something went wrong, please try again later.");
     }
   };
-
-
 
 
   const handlePayment = async (price) => {
