@@ -3,6 +3,34 @@ const { instance } = require("../../../../utils/paymentInstance");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 
+// Function to send order confirmation email
+const sendOrderConfirmationEmail = async (userData, orderId) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      /* Configure your email service */
+      service: "Gmail",
+      auth: {
+        user: "godhustler90956@gmail.com",
+        pass: "vasd avtv sagk mwez",
+      },
+    });
+
+    const mailOptions = {
+      from: "godhustler90956@gmail.com",
+      // to: userData.user_email,
+      to: "sudarshanhosalli90956@gmail.com",
+      subject: "Order Confirmation",
+      html: `<p>Thank you for your order! Your order ID is ${orderId}. We'll process it shortly.</p>`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log("Order confirmation email sent");
+  } catch (error) {
+    console.error("Error sending email:", error);
+    // Handle errors if the email fails to send
+  }
+};
+
 module.exports = createCoreController(
   "api::users-order.users-order",
   ({ strapi }) => ({
@@ -69,7 +97,12 @@ module.exports = createCoreController(
             },
           });
 
-          // return { orderService };
+          // Send order confirmation email
+          await sendOrderConfirmationEmail(
+            additionalData.data,
+            razorpay_payment_id
+          );
+
           ctx.redirect(
             `http://localhost:5173/success-page?reference=${razorpay_payment_id}`
           );
