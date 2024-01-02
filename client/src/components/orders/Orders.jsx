@@ -3,18 +3,12 @@ import axios from "axios";
 import styles from "./orders.module.css";
 import { useAppContext } from "../../context/Context";
 import { Pagination } from 'antd';
-import currencyFormatter from 'currency-formatter';
-import { AiOutlineShoppingCart } from "react-icons/ai";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 
 const Orders = () => {
   const { isLoading, getOrders, user, userOrder, page , handle_orders_page_num, orderspagenum} = useAppContext();
   const [productsData, setProductsData] = useState([]);
   const [productsDetails, setProductsDetails] = useState([]);
   const imgUrl = import.meta.env.VITE_APP_UPLOAD_URL
-
-
 
   useEffect(() => {
     getOrders(user?.id);

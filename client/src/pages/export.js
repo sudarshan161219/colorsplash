@@ -14,6 +14,9 @@ import SuccessPage from "./successPage/SuccessPage.jsx";
 import PageNotFound from "./404/PageNotFound.jsx";
 import Cart from "./cart/Cart.jsx";
 import Checkout from "./checkout/Checkout.jsx";
+import ResetPassword from "./resetPassword/ResetPassword.jsx";
+import EnterEmail from "./resetPassword/EnterEmail.jsx"
+import EnterOtp from "./resetPassword/EnterOtp.jsx"
 
 
 export {
@@ -33,4 +36,7 @@ export {
   PageNotFound,
   Cart,
   Checkout,
+  ResetPassword,
+  EnterEmail,
+  EnterOtp
 };

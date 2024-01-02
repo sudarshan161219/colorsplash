@@ -7,7 +7,10 @@ import {
   Page_four,
   SuccessPage,
   PageNotFound,
-  Checkout
+  Checkout,
+  ResetPassword,
+  EnterEmail,
+  EnterOtp
 } from "./pages/export"
 import ProtectedRoute from "./protectedRoute/ProtectedRoutes";
 import User from "./user/User"
@@ -43,6 +46,7 @@ const App = () => {
             <Route path="/exchange_policy" element={<Page_four />} />
             <Route path="/success-page" element={<SuccessPage />} />
             <Route path="/check-out" element={<Checkout />} />
+
             <Route path="*" element={<PageNotFound />} />
           </Route>
 
@@ -52,7 +56,9 @@ const App = () => {
           >
             <Route index element={<User />} />
           </Route>
-
+          <Route path="/reset_password" element={<EnterEmail />} />
+          <Route path="/reset_password/otp/:id" element={<EnterOtp />} />
+          <Route path="/reset_password/:id" element={<ResetPassword />} />
           <Route path="/register" element={<Register />} />
         </Routes >
       </div>
