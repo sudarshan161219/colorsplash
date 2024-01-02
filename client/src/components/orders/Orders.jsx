@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 import styles from "./orders.module.css";
 import { useAppContext } from "../../context/Context";
+import { Pagination } from 'antd';
 import currencyFormatter from 'currency-formatter';
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import axios from "axios";
 
 const Orders = () => {
-  const { isLoading, getOrders, user, userOrder } = useAppContext();
+  const { isLoading, getOrders, user, userOrder, page , handle_orders_page_num, orderspagenum} = useAppContext();
   const [productsData, setProductsData] = useState([]);
   const [productsDetails, setProductsDetails] = useState([]);
   const imgUrl = import.meta.env.VITE_APP_UPLOAD_URL
@@ -23,6 +24,7 @@ const Orders = () => {
     const extractedProductData = userOrder.map(order => order.attributes.products_data).flat();
     setProductsData(extractedProductData);
   }, [userOrder]);
+
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -54,16 +56,20 @@ const Orders = () => {
       userOrderMap[product.product_id].push(order);
     });
   });
-  
+
 
   const productsWithOrderInfo = productsDetails.map(product => {
     const orderInfo = userOrderMap[product.data.id];
     return {
       ...product,
-      orderInfo 
+      orderInfo
     };
   });
 
+
+  const onPageChange = (page) => {
+    handle_orders_page_num(page)
+  };
 
 
   if (isLoading) {
@@ -79,9 +85,9 @@ const Orders = () => {
       </h1>
       <div className={styles.mtable}>
         <section>
-          <div className="mx-auto max-w-screen-xl py-8 sm:px-6 sm:py-12 lg:px-8">
+          <div className="mx-auto max-w-screen-xl py-8 sm:px-3 sm:py-3 lg:px-6">
             <div className="mx-auto max-w-3xl">
-              <div className="mt-8 space-y-4">
+              <div className=" space-y-4">
                 {productsWithOrderInfo.map((product, idx) => (
                   <div
                     key={idx}
@@ -137,6 +143,10 @@ const Orders = () => {
             </div>
           </div>
         </section>
+      </div>
+
+      <div className='mt-4 mb-4 flex items-center justify-center' >
+        {page.pageCount > 1 && <Pagination onChange={onPageChange} defaultCurrent={orderspagenum} total={page.total} />}
       </div>
     </div>
 

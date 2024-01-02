@@ -13,8 +13,7 @@ const useFeatch = (url) => {
         setLoading(true);
         const { data } = await makeReq.get(url);
         setData(data.data);
-        setPage(data.meta.pagination
-          );
+        setPage(data.meta.pagination);
       } catch (error) {
         setError(true);
       }

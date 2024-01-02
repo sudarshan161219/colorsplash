@@ -20,6 +20,7 @@ import {
     FILTER_BY_PRICE,
     FILTER_MODAL,
     PAGE_NUM,
+    ORDER_PAGE_NUM,
     TOGGLE_AUTH_MODAL,
     GET_USER_ADDRESS_BEGIN,
     GET_USER_ADDRESS_SUCCESS,
@@ -47,7 +48,9 @@ const initialState = {
     userOrder: [],
     sortprice: 'asc',
     filterprice: 0,
-    pagenum: 1.
+    pagenum: 1,
+    orderspagenum:1,
+    page: {}
 }
 
 const Context = createContext({})
@@ -233,7 +236,7 @@ const ContextProvider = ({ children }) => {
 
     const getOrders = async (user_id) => {
         const token = localStorage.getItem('token');
-        dispatch({ type:  GET_USER_ORDER_BEGIN })
+        dispatch({ type: GET_USER_ORDER_BEGIN })
         try {
             const { data } = await axios.get(`http://localhost:1337/api/users-orders?filters[user_Id][$eq]=${user_id}`, {
                 headers: {
@@ -241,9 +244,8 @@ const ContextProvider = ({ children }) => {
                 }
             });
             const resData = data.data
-
-            
-            dispatch({ type: GET_USER_ORDER_SUCCESS, payload: { resData } })
+            const metaPage = data.meta.pagination
+            dispatch({ type: GET_USER_ORDER_SUCCESS, payload: { resData , metaPage} })
         } catch (error) {
             dispatch({ type: GET_USER_ORDER_ERROR })
             toast.error("Something went wrong, please try again later.,");
@@ -351,6 +353,11 @@ const ContextProvider = ({ children }) => {
         dispatch({ type: PAGE_NUM, payload: { page_num } })
     }
 
+
+    const handle_orders_page_num = (page_num) => {
+        dispatch({ type: ORDER_PAGE_NUM, payload: { page_num } })
+    }
+
     const handle_Filter_Modal = () => {
         dispatch({ type: FILTER_MODAL })
     }
@@ -372,6 +379,7 @@ const ContextProvider = ({ children }) => {
             handle_Filter_price,
             handle_Filter_Modal,
             handle_page_num,
+            handle_orders_page_num,
             toggle_Auth_Modal,
             getAddresses,
             getOrders,

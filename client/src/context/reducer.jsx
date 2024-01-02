@@ -19,6 +19,7 @@ import {
     FILTER_MODAL,
     FILTER_BY_PRICE,
     PAGE_NUM,
+    ORDER_PAGE_NUM,
     GET_USER_ADDRESS_BEGIN,
     GET_USER_ADDRESS_SUCCESS,
     GET_USER_ADDRESS_ERROR,
@@ -166,7 +167,8 @@ const reducer = (state, action) => {
         return {
             ...state,
             isLoading: false,
-            userOrder: action.payload.resData
+            userOrder: action.payload.resData,
+            page: action.payload.metaPage
         }
     }
 
@@ -213,6 +215,14 @@ const reducer = (state, action) => {
             pagenum: action.payload.page_num,
         };
     }
+
+    if (action.type == ORDER_PAGE_NUM) {
+        return {
+            ...state,
+            orderspagenum: action.payload.page_num,
+        };
+    }
+
 
     if (action.type === TOGGLE_AUTH_MODAL) {
         return {
